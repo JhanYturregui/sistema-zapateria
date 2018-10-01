@@ -1,0 +1,124 @@
+/***** Variables *****/
+:root{
+    --color-principal: #0277bd;
+    --color-texto: #FFF;
+    --color-scrollbar: #607d8b;
+    --color-opciones: #455a64;
+    --color-bordes: #ccc;
+}
+
+/* Cuerpo */
+.todo-contenido{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+/****** Menú Lateral *****/
+.menu-lateral{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25vw;
+    height: 100vh;
+    border-right: 1px solid var(--color-bordes);
+}
+.menu-lateral .contenido-lateral{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.menu-lateral .contenido-lateral .cabecera-lateral{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25vw;
+    height: 25vh;
+    background: var(--color-principal);
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral{
+    width: 25vw;
+    height: 75vh;
+    margin-top: 25vh;
+    padding: 1vh 1vw;
+    overflow-y: auto;
+}
+/* Categorías */
+.menu-lateral .contenido-lateral .cuerpo-lateral .categorias{
+    width: 100%;
+    height: auto;
+    padding: 8px 10px;
+    color: var(--color-opciones);
+    border-bottom: 1px solid var(--color-bordes);
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .categorias:hover{
+    cursor: pointer;
+    color: var(--color-principal);
+    border-bottom: 1px solid var(--color-principal);
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .categorias p{
+    margin: 0 !important;   
+    width: 100%;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .categorias i{
+    padding-right: 3px;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .categorias .fa-sort-down{
+    float: right;
+}
+/* Opciones de categoría */
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria{
+    width: 100%;
+    height: auto;
+    padding: 5px 0; 
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul{
+    list-style: none;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li{
+    border-bottom: 1px solid var(--color-bordes);
+    padding: 5px 0;
+    margin-bottom: -20px;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li a{
+    width: 100%;
+    color: var(--color-opciones);
+    text-decoration: none;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li a:hover{
+    color: var(--color-principal);
+    text-decoration: none;
+}
+.menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li a i{
+    padding-right: 5px;
+}
+
+/****** Barra navegación *****/
+.barra-navegacion{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 75vw;
+    height: 10vh;
+    background: var(--color-principal);
+    z-index: 800;
+}
+
+/***** Contenido principal *****/
+.contenido-dinamico{
+    position: absolute;
+    top: 10vh;
+    left: 25vw;
+    width: 75vw;
+    height: 90vh;
+    padding: 2vh 0;
+}
+
+/***** Scrollbar personalizado *****/
+.cuerpo-lateral::-webkit-scrollbar{
+    width: 8px;
+}
+.cuerpo-lateral::-webkit-scrollbar-thumb{
+    background: var(--color-scrollbar);
+    border-radius: 5px;
+}

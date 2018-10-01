@@ -1,0 +1,135 @@
+:root{
+    --color-editar: #43a047;
+    --color-editar-hover: #2e7d32;
+    --color-eliminar: #e53935;
+    --color-eliminar-hover: #c62828;
+    --color-crear: #007bff;
+    --color-texto: #FFF;
+    --color-acceso: #ffb300;
+    --color-acceso-hover: #ff8f00;
+    --color-categoria: #455a64;
+    --color-categoria-hover: #263238;
+}
+/***** CRUD pequeño *****/
+.crud-small{
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    overflow-y: auto;
+}
+/***** CRUD grande *****/
+.crud-large{
+    width: 100%;
+    height: auto;
+    overflow-y: auto;
+}
+
+/***** Barra buscar y crear *****/
+.botones{
+    width: 90%;
+    height: 8vh;
+    margin-top: 1vh;
+    margin-left: 5%;
+}
+.botones .buscar{
+    width: 40%;
+    float: left;
+    margin-left: 10px;
+}
+.botones .crear{
+    float: left;
+}
+.botones .crear i{
+    padding-right: 5px;
+}
+/***** Datos *****/
+.datos{
+    width: 90%;
+    height: auto;
+    margin-left: 5%;
+    margin-top: 2vh;
+}
+.datos .fa-pen{
+    color: var(--color-editar);
+}
+.datos .fa-pen:hover{
+    cursor: pointer;
+    color: var(--color-editar-hover);
+}
+.datos .fa-trash{
+    color: var(--color-eliminar);
+}
+.datos .fa-trash:hover{
+    cursor: pointer;
+    color: var(--color-eliminar-hover);
+}
+.datos .fa-key{
+    color: var(--color-acceso);
+}
+.datos .fa-key:hover{
+    cursor: pointer;
+    color: var(--color-acceso-hover);
+}
+
+/***** Paginación *****/
+.paginacion{
+    width: 90%;
+    height: 8vh;
+    margin-top: 1vh;
+    margin-left: 5%;
+    text-align: center; 
+}
+
+/***** Validaciones y alertas *****/
+.validar-campo{
+    color: #d50000;
+    margin: 0 !important;
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+    display: none;
+}
+.alertas{
+    width: 20%;
+    height: auto;
+    padding: 5px 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 800;
+}
+
+/***** Modal CREAR *****/
+.cabecera-crear{
+    background: var(--color-crear);
+    color: var(--color-texto);
+}
+
+/***** Modal Editar *****/
+.cabecera-editar{
+    background: var(--color-editar);
+    color: var(--color-texto);
+}
+
+/***** Modal Eliminar *****/
+.cabecera-eliminar{
+    background: var(--color-eliminar);
+    color: var(--color-texto);
+}
+
+/***** Modal Accesos *****/
+.cabecera-accesos{
+    background: var(--color-acceso);
+    color: var(--color-texto);
+}
+.categorias{
+    color: var(--color-categoria);
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+}
+.categorias:hover{
+    color: var(--color-categoria-hover);
+    cursor: pointer;
+}
+.categorias i{
+    padding-right: 5px;
+}

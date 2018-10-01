@@ -1,0 +1,31 @@
+.contenido-barra{
+	width: 90%;
+	height: 10vh;
+	margin-left: 5%;
+}
+.contenido-barra .nombre-tienda{
+	width: 30%;
+	float: left;
+}
+.contenido-barra .nombre-tienda h4{
+	color: #FFF;
+	margin: 0 !important;
+	margin-top: 2vh !important;
+}
+.contenido-barra .botones-navegacion{
+	width: 70%;
+	float: left;
+}
+.contenido-barra .botones-navegacion ul{
+	list-style: none;
+	float: right;
+	padding-top: 2vh;
+}
+.contenido-barra .botones-navegacion ul li{
+	display: inline;
+	padding-right: 2vw;
+	font-size: 1.4em;
+}
+.contenido-barra .botones-navegacion ul li i{
+	color: #FFF;
+}

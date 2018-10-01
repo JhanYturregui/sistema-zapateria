@@ -1,0 +1,42 @@
+body{
+    background: rgba(210,227,238,1);
+    background: -moz-linear-gradient(left, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(210,227,238,1)), color-stop(100%, rgba(133,173,204,1)));
+    background: -webkit-linear-gradient(left, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
+    background: -o-linear-gradient(left, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
+    background: -ms-linear-gradient(left, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
+    background: linear-gradient(to right, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2e3ee', endColorstr='#85adcc', GradientType=1 );
+}
+.login-form{
+    width: 34vw;
+    height: auto;
+    margin-left: 33vw;
+    margin-top: 25vh;
+}
+.card{
+    width: 100%;
+    height: 100%;
+    background: #FFF !important;
+}
+.card .card-header{
+    width: 100%;
+    height: 10vh;
+    background: #0277bd !important;
+    color: white;
+}
+.card .card-header h2{
+    margin: 0 !important;
+}
+.card .card-header i{
+    padding-right: 10px;
+    font-size: 0.8em;
+}
+.card .card-body{
+    width: 100%;
+    height: auto;
+    padding: 5vh 3vw;
+}
+.card .card-body span i{
+    padding-right: 2vw;
+}
