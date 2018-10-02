@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\TipoUsuario;
-use App\Categoria;
-use App\Opcion;
-use App\Acceso;
+use App\Talla;
 
-class TipoUsuarioController extends Controller
+class TallaController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,16 +26,10 @@ class TipoUsuarioController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
+        $tallas = Talla::where('estado', true)->orderBy('id', 'desc')->paginate(10);
 
-        $categorias = Categoria::where('estado', true)->get();
-        $opciones = Opcion::where('estado', true)->get();
-        $tiposUsuario = TipoUsuario::where('estado', true)
-                                    ->orderBy('id', 'desc')
-                                    ->paginate(10);
-        return view('base.tipos_usuario', ['tiposUsuario' => $tiposUsuario, 
-                                           'categorias'   => $categorias,
-                                           'opciones'     => $opciones,
-                                           'datos'        => $datos]);
+        return view('base.tallas', ['tallas' => $tallas, 
+                                    'datos' => $datos]);
     }
 
     /**
@@ -60,32 +51,33 @@ class TipoUsuarioController extends Controller
     public function store(Request $request)
     {
         $nombre = strtoupper($request->get('nombre'));
-        $existeTipo = TipoUsuario::where('nombre', $nombre)->exists();
+        $existeTalla = Talla::where('nombre', $nombre)->exists();
         $response = array();
 
-        if($existeTipo){
-            $tipoActivo = TipoUsuario::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($tipoActivo){
+        if($existeTalla){
+            $tallaActivo = Talla::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($tallaActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "El tipo de usuario ya se encuentra activo";
+                $response["mensaje"] = "La talla ya se encuentra registrada";
 
             }else{
-                $tipoUsuario = TipoUsuario::where('nombre', $nombre)->first();
-                $tipoUsuario->estado = true;
-                $tipoUsuario->save();
+                $talla = Talla::where('nombre', $nombre)->first();
+                $talla->estado = true;
+                $talla->save();
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
 
         }else{
-            $tipoUsuario = new TipoUsuario();
-            $tipoUsuario->nombre = $nombre;
-            $tipoUsuario->estado = true;
-            $tipoUsuario->save();
+            $talla = new Talla();
+            $talla->nombre = $nombre;
+            $talla->estado = true;
+            $talla->save();
             $response["estado"] = true;
             $response["mensaje"] = "";
         }   
-        print_r(json_encode($response));
+
+        return json_encode($response);
     }
 
     /**
@@ -108,8 +100,8 @@ class TipoUsuarioController extends Controller
     public function edit(Request $request)
     {
         $id = $request->get('id');
-        $tipo_usuario = TipoUsuario::where([['id', $id], ['estado', true]])->first();
-        print_r(json_encode($tipo_usuario));
+        $talla = Talla::where([['id', $id], ['estado', true]])->first();
+        return json_encode($talla);
     }
 
     /**
@@ -122,11 +114,33 @@ class TipoUsuarioController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = $request->get('nombre');
-    
-        $tipoUsuario = TipoUsuario::where([['id', $id], ['estado', true]])->first();
-        $tipoUsuario->nombre = $nombre;
-        $tipoUsuario->save();
+        $nombre = strtoupper($request->get('nombre'));
+        $response = array();
+
+        $existeTalla = Talla::where('nombre', $nombre)->exists();
+        if($existeTalla){
+            $tallaActivo = Talla::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($tallaActivo){
+                $response['estado'] = false;
+                $response['mensaje'] = "La talla ya se encuentra registrada";
+
+            }else{
+                $talla = Talla::where('nombre', $nombre)->first();
+                $talla->estado = true;
+                $talla->save();
+                $response['estado'] = true;
+                $response['mensaje'] = "";
+            }
+
+        }else{
+            $talla = Talla::where([['id', $id], ['estado', true]])->first();
+            $talla->nombre = $nombre;
+            $talla->save();
+            $response['estado'] = true;
+            $response['mensaje'] = "";
+        }
+
+        return json_encode($response);
     }
 
     /**
@@ -139,9 +153,8 @@ class TipoUsuarioController extends Controller
     {
         $id = $request->get('id');
 
-        $tipoUsuario = TipoUsuario::where([['id', $id], ['estado', true]])->first();
-        $tipoUsuario->estado = false;
-        $tipoUsuario->save();
+        $talla = Talla::where([['id', $id], ['estado', true]])->first();
+        $talla->estado = false;
+        $talla->save();
     }
-
 }

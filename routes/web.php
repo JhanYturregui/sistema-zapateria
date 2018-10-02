@@ -195,3 +195,47 @@ Route::delete('/colores/eliminar', [
     'uses' => 'ColorController@destroy',
     'as'   => 'eliminar_color'
 ]);
+
+/****** Rutas TALLAS *****/
+Route::get('/tallas', [
+    'uses' => 'TallaController@index',
+    'as'   => 'tallas'
+]);
+Route::post('/tallas/crear', [
+    'uses' => 'TallaController@store',
+    'as'   => 'crear_talla'
+]);
+Route::post('/tallas/editar', [
+    'uses' => 'TallaController@edit',
+    'as'   => 'editar_talla'
+]);
+Route::patch('/tallas/actualizar', [
+    'uses' => 'TallaController@update',
+    'as'   => 'actualizar_talla'
+]);
+Route::delete('/tallas/eliminar', [
+    'uses' => 'TallaController@destroy',
+    'as'   => 'eliminar_talla'
+]);
+
+/****** Rutas MARCAS *****/
+Route::get('/marcas', [
+    'uses' => 'MarcaController@index',
+    'as'   => 'marcas'
+]);
+Route::post('/marcas/crear', [
+    'uses' => 'MarcaController@store',
+    'as'   => 'crear_marca'
+]);
+Route::post('/marcas/editar', [
+    'uses' => 'MarcaController@edit',
+    'as'   => 'editar_marca'
+]);
+Route::patch('/marcas/actualizar', [
+    'uses' => 'MarcaController@update',
+    'as'   => 'actualizar_marca'
+]);
+Route::delete('/marcas/eliminar', [
+    'uses' => 'MarcaController@destroy',
+    'as'   => 'eliminar_marca'
+]);

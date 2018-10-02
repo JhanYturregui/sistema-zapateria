@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Color;
+use App\Marca;
 
-class ColorController extends Controller
+class MarcaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +16,10 @@ class ColorController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
-        $colores = Color::where('estado', true)->orderBy('id', 'desc')->paginate(10);
+        $marcas = Marca::where('estado', true)->orderBy('id', 'desc')->paginate(10);
 
-        return view('base.colores', ['colores' => $colores, 
-                                      'datos' => $datos]);
+        return view('base.marcas', ['marcas' => $marcas, 
+                                    'datos'  => $datos]);
     }
 
     /**
@@ -41,28 +41,28 @@ class ColorController extends Controller
     public function store(Request $request)
     {
         $nombre = strtoupper($request->get('nombre'));
-        $existeColor = Color::where('nombre', $nombre)->exists();
+        $existeMarca = Marca::where('nombre', $nombre)->exists();
         $response = array();
 
-        if($existeColor){
-            $colorActivo = Color::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($colorActivo){
+        if($existeMarca){
+            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($marcaActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "El color ya se encuentra activo";
+                $response["mensaje"] = "La marca ya se encuentra registrada";
 
             }else{
-                $color = Color::where('nombre', $nombre)->first();
-                $color->estado = true;
-                $color->save();
+                $marca = Marca::where('nombre', $nombre)->first();
+                $marca->estado = true;
+                $marca->save();
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
 
         }else{
-            $color = new Color();
-            $color->nombre = $nombre;
-            $color->estado = true;
-            $color->save();
+            $marca = new Marca();
+            $marca->nombre = $nombre;
+            $marca->estado = true;
+            $marca->save();
             $response["estado"] = true;
             $response["mensaje"] = "";
         }   
@@ -90,8 +90,9 @@ class ColorController extends Controller
     public function edit(Request $request)
     {
         $id = $request->get('id');
-        $color = Color::where([['id', $id], ['estado', true]])->first();
-        return json_encode($color);
+        $marca = Marca::where([['id', $id], ['estado', true]])->first();
+
+        return json_encode($marca);
     }
 
     /**
@@ -107,25 +108,25 @@ class ColorController extends Controller
         $nombre = strtoupper($request->get('nombre'));
         $response = array();
 
-        $existeColor = Color::where('nombre', $nombre)->exists();
-        if($existeColor){
-            $colorActivo = Color::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($colorActivo){
+        $existeMarca = Marca::where('nombre', $nombre)->exists();
+        if($existeMarca){
+            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($marcaActivo){
                 $response['estado'] = false;
-                $response['mensaje'] = "El color ya se encuentra activo";
+                $response['mensaje'] = "La marca ya se encuentra registrada";
 
             }else{
-                $color = Color::where('nombre', $nombre)->first();
-                $color->estado = true;
-                $color->save();
+                $marca = Marca::where('nombre', $nombre)->first();
+                $marca->estado = true;
+                $marca->save();
                 $response['estado'] = true;
                 $response['mensaje'] = "";
             }
 
         }else{
-            $color = Color::where([['id', $id], ['estado', true]])->first();
-            $color->nombre = $nombre;
-            $color->save();
+            $marca = Marca::where([['id', $id], ['estado', true]])->first();
+            $marca->nombre = $nombre;
+            $marca->save();
             $response['estado'] = true;
             $response['mensaje'] = "";
         }
@@ -143,8 +144,8 @@ class ColorController extends Controller
     {
         $id = $request->get('id');
 
-        $color = Color::where([['id', $id], ['estado', true]])->first();
-        $color->estado = false;
-        $color->save();
+        $marca = Marca::where([['id', $id], ['estado', true]])->first();
+        $marca->estado = false;
+        $marca->save();
     }
 }
