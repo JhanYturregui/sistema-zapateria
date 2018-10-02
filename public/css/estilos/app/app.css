@@ -78,7 +78,7 @@
 .menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li{
     border-bottom: 1px solid var(--color-bordes);
     padding: 5px 0;
-    margin-bottom: -20px;
+    margin-bottom: -10px;
 }
 .menu-lateral .contenido-lateral .cuerpo-lateral .opciones-categoria ul li a{
     width: 100%;

@@ -9,27 +9,35 @@
 
         <!-- CUERPO -->
         <div class="cuerpo-lateral">
-
+            @php
+                $i = 1;
+            @endphp
             @foreach ($datos as $categoria => $value)
-                <div class="categorias">
+                <div class="categorias" id="<?php echo "categoria-".$i ?>">
                     <p>
                         <i class="fas fa-lock"></i> {{$categoria}} <i class="fas fa-sort-down"></i>
                     </p>
                 </div>
 
+                <div class="opciones-categoria" id="<?php echo "opcion-".$i ?>">
                 @foreach ($value as $llave => $opciones)
-                    @foreach ($opciones as $ruta => $opcion)
-                    <div class="opciones-categoria">
+                    @foreach ($opciones as $ruta => $opcion)    
                         <ul>
                             <li>
                                 <a href="{{ route($ruta) }}"><i class="fas fa-caret-right"></i>{{$opcion}}</a>
                             </li>
                         </ul>
-                    </div>
                     @endforeach
                 @endforeach
+                </div>        
+                
+                @php
+                    $i++;
+                @endphp
                 
             @endforeach
+
+            <input type="hidden" id="contadorCategorias" value="{{$i}}">
 
             <!--<div class="categorias">
                 <p>

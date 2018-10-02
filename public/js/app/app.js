@@ -31,3 +31,12 @@ window.onload = function(){
         }
     })*/
 }
+
+/*var contadorCategorias = $('#contadorCategorias').val()
+
+for(var i=0; i<contadorCategorias; i++){
+    $('#cat-'+(i+1)).click(function(){
+        alert("ok")
+        //$('#opc-'+(i+1)).css('display', 'none')
+    })
+}*/

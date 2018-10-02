@@ -239,3 +239,25 @@ Route::delete('/marcas/eliminar', [
     'uses' => 'MarcaController@destroy',
     'as'   => 'eliminar_marca'
 ]);
+
+/****** Rutas MODELOS *****/
+Route::get('/modelos', [
+    'uses' => 'ModeloController@index',
+    'as'   => 'modelos'
+]);
+Route::post('/modelos/crear', [
+    'uses' => 'ModeloController@store',
+    'as'   => 'crear_modelo'
+]);
+Route::post('/modelos/editar', [
+    'uses' => 'ModeloController@edit',
+    'as'   => 'editar_modelo'
+]);
+Route::patch('/modelos/actualizar', [
+    'uses' => 'ModeloController@update',
+    'as'   => 'actualizar_modelo'
+]);
+Route::delete('/modelos/eliminar', [
+    'uses' => 'ModeloController@destroy',
+    'as'   => 'eliminar_modelo'
+]);
