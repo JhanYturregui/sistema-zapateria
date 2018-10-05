@@ -17,6 +17,7 @@ class TipoUsuarioController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('paginas');
         $this->middleware('auth');
     }
 

@@ -130,6 +130,15 @@ class AccesoController extends Controller
                 case 11:
                     $ruta = "modelos";
                     break;    
+                case 12:
+                    $ruta = "lineas";
+                    break;    
+                case 13:
+                    $ruta = "proveedores";
+                    break;    
+                case 14:
+                    $ruta = "productos";
+                    break;    
                 
                 default:
                 

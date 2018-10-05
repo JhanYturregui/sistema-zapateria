@@ -261,3 +261,69 @@ Route::delete('/modelos/eliminar', [
     'uses' => 'ModeloController@destroy',
     'as'   => 'eliminar_modelo'
 ]);
+
+/****** Rutas LINEAS *****/
+Route::get('/lineas', [
+    'uses' => 'LineaController@index',
+    'as'   => 'lineas'
+]);
+Route::post('/lineas/crear', [
+    'uses' => 'LineaController@store',
+    'as'   => 'crear_linea'
+]);
+Route::post('/lineas/editar', [
+    'uses' => 'LineaController@edit',
+    'as'   => 'editar_linea'
+]);
+Route::patch('/lineas/actualizar', [
+    'uses' => 'LineaController@update',
+    'as'   => 'actualizar_linea'
+]);
+Route::delete('/lineas/eliminar', [
+    'uses' => 'LineaController@destroy',
+    'as'   => 'eliminar_linea'
+]);
+
+/****** Rutas PROVEEDORES *****/
+Route::get('/proveedores', [
+    'uses' => 'ProveedorController@index',
+    'as'   => 'proveedores'
+]);
+Route::post('/proveedores/crear', [
+    'uses' => 'ProveedorController@store',
+    'as'   => 'crear_proveedor'
+]);
+Route::post('/proveedores/editar', [
+    'uses' => 'ProveedorController@edit',
+    'as'   => 'editar_proveedor'
+]);
+Route::patch('/proveedores/actualizar', [
+    'uses' => 'ProveedorController@update',
+    'as'   => 'actualizar_proveedor'
+]);
+Route::delete('/proveedores/eliminar', [
+    'uses' => 'ProveedorController@destroy',
+    'as'   => 'eliminar_proveedor'
+]);
+
+/****** Rutas PRODUCTOS *****/
+Route::get('/productos', [
+    'uses' => 'ProductoController@index',
+    'as'   => 'productos'
+]);
+Route::post('/productos/crear', [
+    'uses' => 'ProductoController@store',
+    'as'   => 'crear_producto'
+]);
+Route::post('/productos/editar', [
+    'uses' => 'ProductoController@edit',
+    'as'   => 'editar_producto'
+]);
+Route::patch('/productos/actualizar', [
+    'uses' => 'ProductoController@update',
+    'as'   => 'actualizar_producto'
+]);
+Route::delete('/productos/eliminar', [
+    'uses' => 'ProductoController@destroy',
+    'as'   => 'eliminar_producto'
+]);

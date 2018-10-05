@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Marca;
+use App\Linea;
 
-class MarcaController extends Controller
+class LineaController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -27,9 +27,9 @@ class MarcaController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
-        $marcas = Marca::where('estado', true)->orderBy('id', 'desc')->paginate(10);
+        $lineas = Linea::where('estado', true)->orderBy('id', 'desc')->paginate(10);
 
-        return view('base.marcas', ['marcas' => $marcas, 
+        return view('base.lineas', ['lineas' => $lineas, 
                                     'datos'  => $datos]);
     }
 
@@ -52,28 +52,28 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $nombre = strtoupper($request->get('nombre'));
-        $existeMarca = Marca::where('nombre', $nombre)->exists();
+        $existeLinea = Linea::where('nombre', $nombre)->exists();
         $response = array();
 
-        if($existeMarca){
-            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($marcaActivo){
+        if($existeLinea){
+            $lineaActivo = Linea::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($lineaActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "La marca ya se encuentra registrada";
+                $response["mensaje"] = "La línea ya se encuentra registrada";
 
             }else{
-                $marca = Marca::where('nombre', $nombre)->first();
-                $marca->estado = true;
-                $marca->save();
+                $linea = Linea::where('nombre', $nombre)->first();
+                $linea->estado = true;
+                $linea->save();
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
 
         }else{
-            $marca = new Marca();
-            $marca->nombre = $nombre;
-            $marca->estado = true;
-            $marca->save();
+            $linea = new Linea();
+            $linea->nombre = $nombre;
+            $linea->estado = true;
+            $linea->save();
             $response["estado"] = true;
             $response["mensaje"] = "";
         }   
@@ -101,9 +101,9 @@ class MarcaController extends Controller
     public function edit(Request $request)
     {
         $id = $request->get('id');
-        $marca = Marca::where([['id', $id], ['estado', true]])->first();
+        $linea = Linea::where([['id', $id], ['estado', true]])->first();
 
-        return json_encode($marca);
+        return json_encode($linea);
     }
 
     /**
@@ -119,25 +119,25 @@ class MarcaController extends Controller
         $nombre = strtoupper($request->get('nombre'));
         $response = array();
 
-        $existeMarca = Marca::where('nombre', $nombre)->exists();
-        if($existeMarca){
-            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($marcaActivo){
+        $existeLinea = Linea::where('nombre', $nombre)->exists();
+        if($existeLinea){
+            $lineaActivo = Linea::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($lineaActivo){
                 $response['estado'] = false;
-                $response['mensaje'] = "La marca ya se encuentra registrada";
+                $response['mensaje'] = "La línea ya se encuentra registrada";
 
             }else{
-                $marca = Marca::where('nombre', $nombre)->first();
-                $marca->estado = true;
-                $marca->save();
+                $linea = Linea::where('nombre', $nombre)->first();
+                $linea->estado = true;
+                $linea->save();
                 $response['estado'] = true;
                 $response['mensaje'] = "";
             }
 
         }else{
-            $marca = Marca::where([['id', $id], ['estado', true]])->first();
-            $marca->nombre = $nombre;
-            $marca->save();
+            $linea = Linea::where([['id', $id], ['estado', true]])->first();
+            $linea->nombre = $nombre;
+            $linea->save();
             $response['estado'] = true;
             $response['mensaje'] = "";
         }
@@ -155,8 +155,8 @@ class MarcaController extends Controller
     {
         $id = $request->get('id');
 
-        $marca = Marca::where([['id', $id], ['estado', true]])->first();
-        $marca->estado = false;
-        $marca->save();
+        $linea = Linea::where([['id', $id], ['estado', true]])->first();
+        $linea->estado = false;
+        $linea->save();
     }
 }
