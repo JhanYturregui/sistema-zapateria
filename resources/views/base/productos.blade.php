@@ -130,6 +130,22 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="precioCompra" placeholder="Precio compra" aria-label="Precio compra" aria-describedby="precioCompra">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="precioVenta" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVenta">
+                            </div>
+                        </div>
                         <div class="form-group col-md-12">
                             <small id="error" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
                         </div>
@@ -241,27 +257,27 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR PROVEEDOR -->
-<div class="modal fade" id="modalEliminarProveedor" tabindex="-1" role="dialog" aria-labelledby="eliminarProveedor" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- MODAL ELIMINAR PRODUCTO -->
+<div class="modal fade" id="modalEliminarProducto" tabindex="-1" role="dialog" aria-labelledby="eliminarProducto" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
-            <input type="hidden" id="idProveedorE">
+            <input type="hidden" id="idProductoE">
 
             <div class="modal-header cabecera-eliminar">
-                <h5 class="modal-title" id="eliminarProveedor">Eliminar</h5>
+                <h5 class="modal-title" id="eliminarProducto">Eliminar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                ¿Está seguro que desea eliminar este proveedor?
+                ¿Está seguro que desea eliminar este producto?
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnEliminarProveedor">Eliminar</button>
+                <button type="button" class="btn btn-danger" id="btnEliminarProducto">Eliminar</button>
             </div>
         </div>
     </div>

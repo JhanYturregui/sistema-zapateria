@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/roles'
+
 /************ ROLES **************/
 // MODAL CREAR
 function crearRol(){
@@ -27,16 +32,21 @@ $('#btnCrearRol').click(function(){
             url: 'roles/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearRol').modal('hide')
-                    location.replace(APP_URI+'/roles')
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoNombre').text(res.mensaje)
+                    $('#campoNombre').text(a.mensaje)
                     $('#campoNombre').css('display', 'inline')
+                    $('#nombreRol').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNombre').text(e.mensaje)
+                $('#campoNombre').css('display', 'inline')
+                $('#nombreRol').focus()
             }   
         })
     }
@@ -87,10 +97,22 @@ $('#btnActualizarRol').click(function(){
             url: 'roles/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                $('#modalEditarRol').modal('hide')
-                location.replace(APP_URI+'/roles')
-            }   
+            success: function(a){
+                if(a.estado){
+                    $('#modalEditarRol').modal('hide')
+                    location.replace(URI_ACTUALIZAR)
+
+                }else{
+                    $('#campoNombreA').text(a.mensaje)
+                    $('#campoNombreA').css('display', 'inline')
+                    $('#nombreRolA').focus()
+                }
+            },
+            error: function(e){
+                $('#campoNombreA').text(e.mensaje)
+                $('#campoNombreA').css('display', 'inline')
+                $('#nombreRolA').focus()
+            }    
         })
     }
 })
@@ -118,7 +140,7 @@ $('#btnEliminarRol').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarRol').modal('hide')
-            location.replace(APP_URI+'/roles')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

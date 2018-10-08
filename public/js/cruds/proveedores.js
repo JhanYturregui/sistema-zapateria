@@ -149,29 +149,29 @@ $('#btnActualizarProveedor').click(function(){
 })
 
 // MODAL ELIMINAR
-function eliminarLinea(id){
-    $('#idLineaE').val(id)
-    $('#modalEliminarLinea').modal({
+function eliminarProveedor(id){
+    $('#idProveedorE').val(id)
+    $('#modalEliminarProveedor').modal({
         keyboard: false,
         backdrop: 'static'
     })
 }
 
 // ELIMINAR 
-$('#btnEliminarLinea').click(function(){
-    var id = $('#idLineaE').val()
+$('#btnEliminarProveedor').click(function(){
+    var id = $('#idProveedorE').val()
     var data = {
         id,
         _token: $('input[name=_token]').val(),
     }
     $.ajax({
         type: 'delete',
-        url: 'lineas/eliminar',
+        url: 'proveedores/eliminar',
         dataType: 'json',
         data,
         complete: function(a){
-            $('#modalEliminarLinea').modal('hide')
-            location.replace(APP_URI+'/lineas')
+            $('#modalEliminarProveedor').modal('hide')
+            location.replace(APP_URI)
         }   
     })
 })

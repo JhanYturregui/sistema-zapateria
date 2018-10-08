@@ -19,37 +19,50 @@ $('#btnCrearProducto').click(function(){
     var color = $('#color').val()
     var talla = $('#talla').val()
     var linea = $('#linea').val()
-    
-    var data = {
-        descripcion,
-        marca,
-        modelo,
-        color,
-        talla,
-        linea,
-        _token: $('input[name=_token]').val(),
+    var compra = $('#precioCompra').val()
+    var precioCompra = parseFloat(compra)
+    var venta = $('#precioVenta').val()
+    var precioVenta = parseFloat(venta)
+
+    if(isNaN(precioCompra)){
+        $('#error').text('El precio debe ser un valor númerico')
+        $('#error').css('display', 'inline')
+        $('#precioCompra').focus()
+
+    }else if(isNaN(precioVenta)){
+        $('#error').text('El precio debe ser un valor númerico')
+        $('#error').css('display', 'inline')
+        $('#precioVenta').focus()
+
+    }else{
+        var data = {
+            descripcion,
+            marca,
+            modelo,
+            color,
+            talla,
+            linea,
+            precioCompra,
+            precioVenta,
+            _token: $('input[name=_token]').val(),
+        }
+        $.ajax({
+            type: 'post',
+            url: 'productos/crear',
+            dataType: 'json',
+            data,
+            success: function(res){
+                if(res.estado){
+                    $('#modalCrearProducto').modal('hide')
+                    location.replace(APP_URI)
+                        
+                }else{
+                    $('#error').text(res.mensaje)
+                    $('#error').css('display', 'inline')
+                }
+            }   
+        })
     }
-    $.ajax({
-        type: 'post',
-        url: 'productos/crear',
-        dataType: 'json',
-        data,
-        success: function(res){
-            if(res.estado){
-                $('#modalCrearProducto').modal('hide')
-                location.replace(APP_URI)
-                    
-            }else{
-                $('#error').text(res.mensaje)
-                $('#error').css('display', 'inline')
-            }
-        },
-        error: function(xhr, status){
-            var mensaje = "Error al crear producto. Vuelva a intentarlo."
-            $('#error').text(mensaje)
-            $('#error').css('display', 'inline')
-        }   
-    })
 })
 
 // MODAL EDITAR
@@ -118,42 +131,47 @@ $('#btnActualizarProducto').click(function(){
                 location.replace(APP_URI)
 
             }else{
-                $('#error').text(res.mensaje)
-                $('#error').css('display', 'inline')
+                $('#errorA').text(res.mensaje)
+                $('#errorA').css('display', 'inline')
             }
         },
         error: function(xhr, status){
             var mensaje = "Error al actualizar producto. Vuelva a intentarlo."
-            $('#error').text(mensaje)
-            $('#error').css('display', 'inline')
+            $('#errorA').text(mensaje)
+            $('#errorA').css('display', 'inline')
         }   
     })
 })
 
 // MODAL ELIMINAR
-function eliminarLinea(id){
-    $('#idLineaE').val(id)
-    $('#modalEliminarLinea').modal({
+function eliminarProducto(id){
+    $('#idProductoE').val(id)
+    $('#modalEliminarProducto').modal({
         keyboard: false,
         backdrop: 'static'
     })
 }
 
 // ELIMINAR 
-$('#btnEliminarLinea').click(function(){
-    var id = $('#idLineaE').val()
+$('#btnEliminarProducto').click(function(){
+    var id = $('#idProductoE').val()
     var data = {
         id,
         _token: $('input[name=_token]').val(),
     }
     $.ajax({
         type: 'delete',
-        url: 'lineas/eliminar',
+        url: 'productos/eliminar',
         dataType: 'json',
         data,
-        complete: function(a){
-            $('#modalEliminarLinea').modal('hide')
-            location.replace(APP_URI+'/lineas')
+        success: function(a){
+            $('#modalEliminarProducto').modal('hide')
+            location.replace(APP_URI)
+        },
+        error: function(a){
+            console.log(a)
+            $('#error').text(a)
+            $('#error').css('display', 'inline')
         }   
     })
 })

@@ -54,9 +54,8 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = $request->get('nombre');
+        $nombre = strtoupper($request->get('nombre'));
         $orden = $request->get('orden');
-        $icono = $request->get('icono');
 
         $existeCategoria = Categoria::where('nombre', $nombre)->exists();
         $response = array();
@@ -65,12 +64,13 @@ class CategoriaController extends Controller
             $categoriaActivo = Categoria::where([['nombre', $nombre], ['estado', true]])->exists();
             if($categoriaActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "La categoría ya se encuentra activa";
+                $response["mensaje"] = "La categoría ya se encuentra registrada";
 
             }else{
                 $categoria = Categoria::where('nombre', $nombre)->first();
                 $categoria->estado = true;
                 $categoria->save();
+                
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
@@ -79,13 +79,14 @@ class CategoriaController extends Controller
             $categoria = new Categoria();
             $categoria->nombre = $nombre;
             $categoria->orden = $orden;
-            $categoria->icono = $icono;
             $categoria->estado = true;
             $categoria->save();
+            
             $response["estado"] = true;
             $response["mensaje"] = "";
         }   
-        print_r(json_encode($response));
+
+        return json_encode($response);
 
     }
 
@@ -123,15 +124,30 @@ class CategoriaController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = $request->get('nombre');
+        $nombre = strtoupper($request->get('nombre'));
         $orden = $request->get('orden');
         $icono = $request->get('icono');
-    
-        $categoria = Categoria::where([['id', $id], ['estado', true]])->first();
-        $categoria->nombre = $nombre;
-        $categoria->orden = $orden;
-        $categoria->icono = $icono;
-        $categoria->save();
+
+        $response = array();
+
+        $existeCategoria = Categoria::where([['nombre', $nombre], ['id', '!=', $id]])->exists();
+        
+        if($existeCategoria){
+            $response["estado"] = false;
+            $response["mensaje"] = "Esta categoría ya se encuentra registrada";
+
+        }else{
+            $categoria = Categoria::where([['id', $id], ['estado', true]])->first();
+            $categoria->nombre = $nombre;
+            $categoria->orden = $orden;
+            $categoria->icono = $icono;
+            $categoria->save();
+
+            $reponse["estado"] = true;
+            $reponse["mensaje"] = "";
+        }
+
+        return json_encode($response);
 
     }
 

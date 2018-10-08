@@ -9,6 +9,7 @@ use App\Modelo;
 use App\Color;
 use App\Talla;
 use App\Linea;
+use App\Inventario;
 
 class ProductoController extends Controller
 {
@@ -76,6 +77,8 @@ class ProductoController extends Controller
         $color = $request->get('color');
         $talla = $request->get('talla');
         $linea = $request->get('linea');
+        $precioCompra = $request->get('precioCompra');
+        $precioVenta = $request->get('precioVenta');
      
         $response = array();
         $codigo = $this->generarCodigo(8);
@@ -114,6 +117,7 @@ class ProductoController extends Controller
             }                                                                 
 
         }else{
+            /** Tabla PRODUCTOS */
             $producto = new Producto();
             $producto->codigo = $codigo;
             $producto->descripcion = $descripcion;
@@ -122,11 +126,24 @@ class ProductoController extends Controller
             $producto->color = $color;
             $producto->talla = $talla;
             $producto->linea = $linea;
+            $producto->precio_compra = $precioCompra;
+            $producto->precio_venta = $precioVenta;
             $producto->estado = true;
             $producto->save();
-            
+
             $response["estado"] = true;
             $response["mensaje"] = "";
+
+            /* Tabla INVENTARIO 
+            $inventario = new Inventario();
+            $inventario->codigo_producto = $codigo;
+            $inventario->sucursal = 1;
+            $inventario->cantidad= 0;
+            $inventario->estado = true;
+            $inventario->save();
+            
+            $response["estado"] = true;
+            $response["mensaje"] = "";*/
         }
 
         return json_encode($response);
@@ -176,49 +193,42 @@ class ProductoController extends Controller
      
         $response = array();
 
-        /*$existeProducto = Producto::where([['marca', $marca],
+        $existeProducto = Producto::where([['marca', $marca],
+                                           ['modelo', $modelo],
+                                           ['color', $color],
+                                           ['talla', $talla],
+                                           ['linea', $linea],
+                                           ['id', $id]])->exists();
+
+        if($existeProducto){
+            $response["estado"] = false;
+            $response["mensaje"] = "Los datos del producto son los mismos";                                                                                                              
+
+        }else{
+            $existeProducto2 = Producto::where([['marca', $marca],
                                            ['modelo', $modelo],
                                            ['color', $color],
                                            ['talla', $talla],
                                            ['linea', $linea]])->exists();
 
-        if($existeProducto){
-            $productoActivo = Producto::where([['marca', $marca],
-                                               ['modelo', $modelo],
-                                               ['color', $color],
-                                               ['talla', $talla],
-                                               ['linea', $linea],
-                                               ['estado', true]])->exists();
-            if($productoActivo){
+            if($existeProducto2){
                 $response["estado"] = false;
-                $response["mensaje"] = "El producto ya se encuentra registrado";
+                $response["mensaje"] = "El producto ya se encuentra registrado";  
 
             }else{
-                $producto = Producto::where([['marca', $marca],
-                                             ['modelo', $modelo],
-                                             ['color', $color],
-                                             ['talla', $talla],
-                                             ['linea', $linea]])->first();
-                $producto->estado = true;
+                $producto = Producto::where('id', $id)->first();
+                $producto->descripcion = $descripcion;
+                $producto->marca = $marca;
+                $producto->modelo = $modelo;
+                $producto->color = $color;
+                $producto->talla = $talla;
+                $producto->linea = $linea;
+                $producto->save();
+                
                 $response["estado"] = true;
-                $response["mensaje"] = "";                                             
-            }                                                                 
-
-        }else{
-            $producto = new Producto();
-            $producto->codigo = $codigo;
-            $producto->descripcion = $descripcion;
-            $producto->marca = $marca;
-            $producto->modelo = $modelo;
-            $producto->color = $color;
-            $producto->talla = $talla;
-            $producto->linea = $linea;
-            $producto->estado = true;
-            $producto->save();
-            
-            $response["estado"] = true;
-            $response["mensaje"] = "";
-        }*/
+                $response["mensaje"] = "";
+            }
+        }
 
         return json_encode($response);
     }
@@ -229,9 +239,17 @@ class ProductoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->get('id');
+        $producto = Producto::where('id', $id)->first();
+        $producto->estado = false;
+        $producto->save();
+
+        $response = array();
+        $response["estado"] = true;
+        
+        return json_encode($response);
     }
 
     /**

@@ -158,8 +158,11 @@ class ProveedorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->get('id');
+        $proveedor = Proveedor::where('id', $id)->first();
+        $proveedor->estado = false;
+        $proveedor->save();
     }
 }

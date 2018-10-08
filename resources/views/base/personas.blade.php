@@ -59,7 +59,7 @@
 
 <!-- MODAL CREAR ROL -->
 <div class="modal fade" id="modalCrearPersona" tabindex="-1" role="dialog" aria-labelledby="crearPersona" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <div class="modal-header cabecera-crear">
@@ -120,7 +120,7 @@
 
 <!-- MODAL ACTUALIZAR Persona -->
 <div class="modal fade" id="modalEditarPersona" tabindex="-1" role="dialog" aria-labelledby="editarPersona" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idPersonaA">
@@ -183,7 +183,7 @@
 
 <!-- MODAL ELIMINAR PERSONA -->
 <div class="modal fade" id="modalEliminarPersona" tabindex="-1" role="dialog" aria-labelledby="eliminarPersona" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idPersonaE">

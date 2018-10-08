@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/personas'
+
 /************ PERSONAS **************/
 // MODAL CREAR
 function crearPersona(){
@@ -45,17 +50,21 @@ $('#btnCrearPersona').click(function(){
             url: 'personas/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearPersona').modal('hide')
-                    location.replace(APP_URI+'/personas')
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoNumeroDoc').text(res.mensaje)
+                    $('#campoNumeroDoc').text(a.mensaje)
                     $('#campoNumeroDoc').css('display', 'inline')
                     $('#numeroDocumento').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNumeroDoc').text(e.message)
+                $('#campoNumeroDoc').css('display', 'inline')
+                $('#numeroDocumento').focus()
             }
         })
     }
@@ -131,6 +140,7 @@ $('#btnActualizarPersona').click(function(){
 
     }else{
         var data = {
+            id,
             tipoDocumento,
             numeroDocumento,
             nombres,
@@ -147,17 +157,21 @@ $('#btnActualizarPersona').click(function(){
             url: 'personas/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarPersona').modal('hide')
-                    location.replace(APP_URI+'/personas')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
-                    $('#campoNumeroDocA').text(res.mensaje)
+                    $('#campoNumeroDocA').text(a.mensaje)
                     $('#campoNumeroDocA').css('display', 'inline')
                     $('#numeroDocumentoA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNumeroDocA').text(e.message)
+                $('#campoNumeroDocA').css('display', 'inline')
+                $('#numeroDocumentoA').focus()
             }
         })
     }

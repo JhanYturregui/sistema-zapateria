@@ -22,6 +22,8 @@ class CreateProductosTable extends Migration
             $table->integer('color');
             $table->integer('talla');
             $table->integer('linea');
+            $table->double('precio_compra', 7, 2);
+            $table->double('precio_venta', 7, 2);
             $table->boolean('estado');
             $table->timestamps();
         });

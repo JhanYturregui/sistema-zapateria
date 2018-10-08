@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/opciones'
+
 /************ OPCIONES **************/
 // MODAL CREAR
 function crearOpcion(){
@@ -13,7 +18,7 @@ $('#btnCrearOpcion').click(function(){
     var nombre = $('#nombreOpcion').val()
     var categoria = $('#categoria').val()
     var orden = $('#ordenOpcion').val()
-    var icono = $('#iconoOpcion').val()
+    //var icono = $('#iconoOpcion').val()
     
     if(nombre == ""){
         $('#campoNombre').text('Campo obligatorio')
@@ -25,7 +30,6 @@ $('#btnCrearOpcion').click(function(){
             nombre,
             categoria,            
             orden,
-            icono,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
@@ -33,16 +37,20 @@ $('#btnCrearOpcion').click(function(){
             url: 'opciones/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearOpcion').modal('hide')
-                    location.replace(APP_URI+'/opciones')
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoNombre').text(res.mensaje)
+                    $('#campoNombre').text(a.mensaje)
                     $('#campoNombre').css('display', 'inline')
+                    $('#nombreOpcion').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNombre').text(e.message)
+                $('#campoNombre').css('display', 'inline')
             }   
         })
     }
@@ -63,12 +71,12 @@ function editarOpcion(id){
             var nombre = data.nombre
             var categoria = data.categoria
             var orden = data.orden
-            var icono = data.icono
+            //var icono = data.icono
 
             $('#nombreOpcionA').val(nombre)
             $('#categoriaA').val(categoria)
             $('#ordenOpcionA').val(orden)
-            $('#iconoOpcionA').val(icono)
+            //$('#iconoOpcionA').val(icono)
             $('#idOpcionA').val(id)
 
             $('#modalEditarOpcion').modal({
@@ -85,7 +93,7 @@ $('#btnActualizarOpcion').click(function(){
     var nombre = $('#nombreOpcionA').val()
     var categoria = $('#categoriaA').val()
     var orden = $('#ordenOpcionA').val()
-    var icono = $('#iconoOpcionA').val()
+    //var icono = $('#iconoOpcionA').val()
     
     if(nombre == ""){
         $('#campoNombreA').css('display', 'inline')
@@ -97,7 +105,6 @@ $('#btnActualizarOpcion').click(function(){
             nombre,
             categoria,
             orden,
-            icono,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
@@ -105,9 +112,22 @@ $('#btnActualizarOpcion').click(function(){
             url: 'opciones/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                $('#modalEditarOpcion').modal('hide')
-                location.replace(APP_URI+'/opciones')
+            success: function(a){
+                console.log(a)
+                if(a.estado){
+                    $('#modalEditarOpcion').modal('hide')
+                    location.replace(URI_ACTUALIZAR)
+
+                }else{
+                    $('#campoNombreA').text(a.mensaje)
+                    $('#campoNombreA').css('display', 'inline')
+                    $('#nombreOpcionA').focus()
+                }
+            },
+            error: function(e){
+                $('#campoNombreA').text(e.message)
+                $('#campoNombreA').css('display', 'inline')
+                $('#nombreOpcionA').focus()
             }   
         })
     }

@@ -115,9 +115,9 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR Talla -->
+<!-- MODAL ELIMINAR TALLA -->
 <div class="modal fade" id="modalEliminarTalla" tabindex="-1" role="dialog" aria-labelledby="eliminarTalla" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idTallaE">

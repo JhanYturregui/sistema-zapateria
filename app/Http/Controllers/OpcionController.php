@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Opcion;
 use App\Categoria;
 
@@ -32,9 +33,14 @@ class OpcionController extends Controller
         $datos = $accesoController->obtenerMenus();
 
         $categorias = Categoria::where('estado', true)->get();
-        $opciones = Opcion::where('estado', true)
+        /*$opciones = Opcion::where('estado', true)
                             ->orderBy('id', 'desc')
-                            ->paginate(10);
+                            ->paginate(10);*/
+        $opciones = DB::table('opciones')
+                    ->join('categorias', 'categorias.id', '=', 'opciones.categoria')
+                    ->select('opciones.*', 'categorias.nombre as categoria')
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
         return view('seguridad.opciones', ['opciones'  => $opciones, 
                                            'categorias'=> $categorias,
                                            'datos'     => $datos]);                            
@@ -58,10 +64,10 @@ class OpcionController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = $request->get('nombre');
+        $nombre = strtoupper($request->get('nombre'));
         $categoria = $request->get('categoria');
         $orden = $request->get('orden');
-        $icono = $request->get('icono');
+        //$icono = $request->get('icono');
 
         $existeOpcion = Opcion::where('nombre', $nombre)->exists();
         $response = array();
@@ -70,12 +76,13 @@ class OpcionController extends Controller
             $opcionActivo = Opcion::where([['nombre', $nombre], ['estado', true]])->exists();
             if($opcionActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "La opción ya se encuentra activa";
+                $response["mensaje"] = "La opción ya se encuentra registrada";
 
             }else{
                 $opcion = Opcion::where('nombre', $nombre)->first();
                 $opcion->estado = true;
                 $opcion->save();
+
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
@@ -85,14 +92,15 @@ class OpcionController extends Controller
             $opcion->nombre = $nombre;
             $opcion->categoria = $categoria;
             $opcion->orden = $orden;
-            $opcion->icono = $icono;
+            //$opcion->icono = $icono;
             $opcion->estado = true;
             $opcion->save();
+
             $response["estado"] = true;
             $response["mensaje"] = "";
         }
 
-        print_r(json_encode($response));
+        return json_encode($response);
 
     }
 
@@ -130,17 +138,32 @@ class OpcionController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = $request->get('nombre');
+        $nombre = strtoupper($request->get('nombre'));
         $categoria = $request->get('categoria');
         $orden = $request->get('orden');
-        $icono = $request->get('icono');
-    
-        $opcion = Opcion::where([['id', $id], ['estado', true]])->first();
-        $opcion->nombre = $nombre;
-        $opcion->categoria = $categoria;
-        $opcion->orden = $orden;
-        $opcion->icono = $icono;
-        $opcion->save();
+        //$icono = $request->get('icono');
+
+        $response = array();
+
+        $existeOpcion = Opcion::where([['nombre', $nombre], ['id', '!=', $id]])->exists();
+        
+        if($existeOpcion){
+            $response["estado"] = false;
+            $response["mensaje"] = "Esta opción ya se encuentra registrada";
+
+        }else{
+            $opcion = Opcion::where([['id', $id], ['estado', true]])->first();
+            $opcion->nombre = $nombre;
+            $opcion->categoria = $categoria;
+            $opcion->orden = $orden;
+            //$opcion->icono = $icono;
+            $opcion->save();
+
+            $reponse["estado"] = true;
+            $reponse["mensaje"] = "";
+        }
+
+        return json_encode($response);
     }
 
     /**

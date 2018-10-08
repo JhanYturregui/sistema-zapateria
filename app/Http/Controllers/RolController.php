@@ -52,7 +52,7 @@ class RolController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = $request->get('nombre');
+        $nombre = strtoupper($request->get('nombre'));
         $existeRol = Rol::where('nombre', $nombre)->exists();
         $response = array();
 
@@ -60,12 +60,13 @@ class RolController extends Controller
             $rolActivo = Rol::where([['nombre', $nombre], ['estado', true]])->exists();
             if($rolActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "El rol ya se encuentra activo";
+                $response["mensaje"] = "El rol ya se encuentra registrado";
 
             }else{
                 $rol = Rol::where('nombre', $nombre)->first();
                 $rol->estado = true;
                 $rol->save();
+
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
@@ -75,10 +76,12 @@ class RolController extends Controller
             $rol->nombre = $nombre;
             $rol->estado = true;
             $rol->save();
+
             $response["estado"] = true;
             $response["mensaje"] = "";
         }   
-        print_r(json_encode($response));
+
+        return json_encode($response);
     }
 
     /**
@@ -115,11 +118,24 @@ class RolController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = $request->get('nombre');
-    
-        $rol = Rol::where([['id', $id], ['estado', true]])->first();
-        $rol->nombre = $nombre;
-        $rol->save();
+        $nombre = strtoupper($request->get('nombre'));
+        $reponse = array();
+
+        $existeRol = Rol::where([['nombre', $nombre], ['id', '!=', $id]])->exists();
+        if($existeRol){
+            $response["estado"] = false;
+            $response["mensaje"] = "Este rol ya está registrado";
+
+        }else{
+            $rol = Rol::where('id', $id)->first();
+            $rol->nombre = $nombre;
+            $rol->save();
+
+            $response["estado"] = true;
+            $response["mensaje"] = "";
+        }
+
+        return json_encode($response);
     }
 
     /**

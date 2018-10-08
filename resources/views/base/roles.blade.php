@@ -115,9 +115,9 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR TIPO USUARIO -->
+<!-- MODAL ELIMINAR ROL -->
 <div class="modal fade" id="modalEliminarRol" tabindex="-1" role="dialog" aria-labelledby="eliminarRol" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idRolE">

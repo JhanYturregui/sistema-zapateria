@@ -136,6 +136,7 @@ class PersonaController extends Controller
      */
     public function update(Request $request)
     {
+        $id = $request->get('id');
         $tipoDocumento = $request->get('tipoDocumento');
         $numeroDocumento = $request->get('numeroDocumento');
         $nombres = $request->get('nombres');
@@ -145,21 +146,29 @@ class PersonaController extends Controller
         $telefono = $request->get('telefono');
         $direccion = $request->get('direccion');
         $roles = json_encode($request->get('roles'));
-        
-        $persona = Persona::where('numero_documento', $numeroDocumento)->first();
-        $persona->tipo_documento = $tipoDocumento;
-        $persona->numero_documento = $numeroDocumento;
-        $persona->nombres = $nombres;
-        $persona->apellidos = $apellidos;
-        $persona->razon_social = $razonSocial;
-        $persona->correo = $correo;
-        $persona->telefono = $telefono;
-        $persona->direccion = $direccion;
-        $persona->roles = $roles;
-        $persona->estado = true;
-        $persona->save();
-        $response["estado"] = true;
-        $response["mensaje"] = "";
+
+        $existePersona = Persona::where([['numero_documento', $numeroDocumento], ['id', '!=', $id]])->exists();
+        if($existePersona){
+            $response["estado"] = false;
+            $response["mensaje"] = "Esta persona ya se encuentra registrada";
+
+        }else{
+            $persona = Persona::where('numero_documento', $numeroDocumento)->first();
+            $persona->tipo_documento = $tipoDocumento;
+            $persona->numero_documento = $numeroDocumento;
+            $persona->nombres = $nombres;
+            $persona->apellidos = $apellidos;
+            $persona->razon_social = $razonSocial;
+            $persona->correo = $correo;
+            $persona->telefono = $telefono;
+            $persona->direccion = $direccion;
+            $persona->roles = $roles;
+            $persona->estado = true;
+            $persona->save();
+
+            $response["estado"] = true;
+            $response["mensaje"] = "";
+        }
 
         return json_encode($response);
     }

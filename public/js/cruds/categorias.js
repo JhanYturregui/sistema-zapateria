@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/categorias'
+
 /************ CATEGORÍAS **************/
 // MODAL CREAR
 function crearCategoria(){
@@ -11,7 +16,7 @@ function crearCategoria(){
 // CREAR 
 $('#btnCrearCategoria').click(function(){
     var nombre = $('#nombreCategoria').val()
-    var icono = $('#iconoCategoria').val()
+    //var icono = $('#iconoCategoria').val()
     var orden = $('#ordenCategoria').val()
     
     if(nombre == ""){
@@ -22,7 +27,6 @@ $('#btnCrearCategoria').click(function(){
     }else{
         var data = {
             nombre,
-            icono,
             orden,
             _token: $('input[name=_token]').val(),
         }
@@ -31,16 +35,20 @@ $('#btnCrearCategoria').click(function(){
             url: 'categorias/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearCategoria').modal('hide')
-                    location.replace(APP_URI+'/categorias')
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoNombre').text(res.mensaje)
+                    $('#campoNombre').text(a.mensaje)
                     $('#campoNombre').css('display', 'inline')
+                    $('#nombreCategoria').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNombre').text(e)
+                $('#campoNombre').css('display', 'inline')
             }   
         })
     }
@@ -59,11 +67,11 @@ function editarCategoria(id){
         complete: function(res){
             var data = res.responseJSON
             var nombre = data.nombre
-            var icono = data.icono
+            //var icono = data.icono
             var orden = data.orden
 
             $('#nombreCategoriaA').val(nombre)
-            $('#iconoCategoriaA').val(icono)
+            //$('#iconoCategoriaA').val(icono)
             $('#ordenCategoriaA').val(orden)
             $('#idCategoriaA').val(id)
 
@@ -79,7 +87,7 @@ function editarCategoria(id){
 $('#btnActualizarCategoria').click(function(){
     var id = $('#idCategoriaA').val()
     var nombre = $('#nombreCategoriaA').val()
-    var icono = $('#iconoCategoriaA').val()
+    //var icono = $('#iconoCategoriaA').val()
     var orden = $('#ordenCategoriaA').val()
     
     if(nombre == ""){
@@ -90,7 +98,6 @@ $('#btnActualizarCategoria').click(function(){
         var data = {
             id,
             nombre,
-            icono,
             orden,
             _token: $('input[name=_token]').val(),
         }
@@ -99,10 +106,22 @@ $('#btnActualizarCategoria').click(function(){
             url: 'categorias/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                $('#modalEditarCategoria').modal('hide')
-                location.replace(APP_URI+'/categorias')
-            }   
+            success: function(a){
+                if(a.estado){
+                    $('#modalEditarCategoria').modal('hide')
+                    location.replace(URI_ACTUALIZAR)
+
+                }else{
+                    $('#campoNombreA').text(a.mensaje)
+                    $('#campoNombreA').css('display', 'inline')
+                    $('#nombreCategoriaA').focus()
+                }
+            },
+            error: function(e){
+                $('#campoNombreA').text(e)
+                $('#campoNombreA').css('display', 'inline')
+                $('#nombreCategoriaA').focus()
+            }  
         })
     }
 })
@@ -130,7 +149,7 @@ $('#btnEliminarCategoria').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarCategoria').modal('hide')
-            location.replace(APP_URI+'/categorias')
+            location.replace(URI_CREAR)
         }   
     })
 })

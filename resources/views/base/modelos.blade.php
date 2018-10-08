@@ -117,7 +117,7 @@
 
 <!-- MODAL ELIMINAR MODELO -->
 <div class="modal fade" id="modalEliminarModelo" tabindex="-1" role="dialog" aria-labelledby="eliminarModelo" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idModeloE">

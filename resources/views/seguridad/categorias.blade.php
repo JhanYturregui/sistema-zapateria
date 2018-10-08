@@ -27,7 +27,6 @@
                             <th>Id</th>
                             <th>Nombre</th>
                             <th>Orden</th>
-                            <th>Ícono</th>
                             <th colspan="2"><i class="fas fa-wrench"></i></th>
                         </tr>
                     </thead>
@@ -37,7 +36,6 @@
                                 <td>{{ $categoria->id }}</td>
                                 <td>{{ $categoria->nombre }}</td>
                                 <td>{{ $categoria->orden }}</td>
-                                <td><i class="{{ $categoria->icono }}"></i></td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarCategoria({{$categoria->id}})"></i></td>
                                 <td><i class="fas fa-trash" title="Eliminar" onclick="eliminarCategoria({{$categoria->id}})"></i></td>
                             </tr>
@@ -61,7 +59,7 @@
         <div class="modal-content">
 
             <div class="modal-header cabecera-crear">
-                <h5 class="modal-title" id="crearCategoria">Crear</h5>
+                <h5 class="modal-title" id="crearCategoria">Crear Categoría</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -84,10 +82,10 @@
                             <option value="4">4</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="cat">Ícono</label>
                         <input type="text" id="iconoCategoria" class="form-control" placeholder="Clase ícono">
-                    </div>
+                    </div>-->
                 </form>    
             </div>
 
@@ -107,7 +105,7 @@
             <input type="hidden" id="idCategoriaA">
 
             <div class="modal-header cabecera-editar">
-                <h5 class="modal-title" id="editarCategoria">Editar</h5>
+                <h5 class="modal-title" id="editarCategoria">Editar Categoría</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -130,10 +128,10 @@
                             <option value="4">4</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="cat">Ícono</label>
                         <input type="text" id="iconoCategoriaA" class="form-control" placeholder="Clase ícono">
-                    </div>
+                    </div>-->
                 </form>    
             </div>
 
@@ -147,7 +145,7 @@
 
 <!-- MODAL ELIMINAR CATEGORÍA -->
 <div class="modal fade" id="modalEliminarCategoria" tabindex="-1" role="dialog" aria-labelledby="eliminarCategoria" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idCategoriaE">

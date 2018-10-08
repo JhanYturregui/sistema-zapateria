@@ -117,7 +117,7 @@
 
 <!-- MODAL ELIMINAR LINEA -->
 <div class="modal fade" id="modalEliminarLinea" tabindex="-1" role="dialog" aria-labelledby="eliminarLinea" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idLineaE">

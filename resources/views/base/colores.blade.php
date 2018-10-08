@@ -117,7 +117,7 @@
 
 <!-- MODAL ELIMINAR COLOR -->
 <div class="modal fade" id="modalEliminarColor" tabindex="-1" role="dialog" aria-labelledby="eliminarColor" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
             <input type="hidden" id="idColorE">
