@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/tallas'
+
 /************ TALLAS **************/
 // MODAL CREAR
 function crearTalla(){
@@ -27,17 +32,21 @@ $('#btnCrearTalla').click(function(){
             url: 'tallas/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearTalla').modal('hide')
-                    location.replace(APP_URI+'/tallas')
+                    location.replace(URI_CREAR)
                     
-
                 }else{
-                    $('#campoTalla').text(res.mensaje)
+                    $('#campoTalla').text(a.mensaje)
                     $('#campoTalla').css('display', 'inline')
+                    $('#nombreTalla').focus()
                 }
+            },
+            error: function(e){
+                $('#campoTalla').text(e.message)
+                $('#campoTalla').css('display', 'inline')
+                $('#nombreTalla').focus()
             }   
         })
     }
@@ -88,17 +97,21 @@ $('#btnActualizarTalla').click(function(){
             url: 'tallas/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarTalla').modal('hide')
-                    location.replace(APP_URI+'/tallas')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
                     $('#campoTallaA').text(res.mensaje)
                     $('#campoTallaA').css('display', 'inline')
                     $('#nombreTallaA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoTallaA').text(a.message)
+                $('#campoTallaA').css('display', 'inline')
+                $('#nombreTallaA').focus()
             }   
         })
     }
@@ -127,7 +140,7 @@ $('#btnEliminarTalla').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarTalla').modal('hide')
-            location.replace(APP_URI+'/tallas')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

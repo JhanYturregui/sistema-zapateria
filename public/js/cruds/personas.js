@@ -200,7 +200,7 @@ $('#btnEliminarPersona').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarPersona').modal('hide')
-            location.replace(APP_URI+'/personas')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

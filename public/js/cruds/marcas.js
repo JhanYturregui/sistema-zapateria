@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/marcas'
+
 /************ MARCAS **************/
 // MODAL CREAR
 function crearMarca(){
@@ -27,17 +32,21 @@ $('#btnCrearMarca').click(function(){
             url: 'marcas/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearMarca').modal('hide')
-                    location.replace(APP_URI+'/marcas')
+                    location.replace(URI_CREAR)
                     
-
                 }else{
-                    $('#campoMarca').text(res.mensaje)
+                    $('#campoMarca').text(a.mensaje)
                     $('#campoMarca').css('display', 'inline')
+                    $('#nombreMarca').focus()
                 }
+            },
+            error: function(e){
+                $('#campoMarca').text(e.message)
+                $('#campoMarca').css('display', 'inline')
+                $('#nombreMarca').focus()
             }   
         })
     }
@@ -88,17 +97,21 @@ $('#btnActualizarMarca').click(function(){
             url: 'marcas/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarMarca').modal('hide')
-                    location.replace(APP_URI+'/marcas')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
-                    $('#campoMarcaA').text(res.mensaje)
+                    $('#campoMarcaA').text(a.mensaje)
                     $('#campoMarcaA').css('display', 'inline')
                     $('#nombreMarcaA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoMarcaA').text(e.message)
+                $('#campoMarcaA').css('display', 'inline')
+                $('#nombreMarcaA').focus()
             }   
         })
     }
@@ -127,7 +140,7 @@ $('#btnEliminarMarca').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarMarca').modal('hide')
-            location.replace(APP_URI+'/marcas')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

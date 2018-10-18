@@ -52,7 +52,7 @@ class RolController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $existeRol = Rol::where('nombre', $nombre)->exists();
         $response = array();
 
@@ -118,7 +118,7 @@ class RolController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $reponse = array();
 
         $existeRol = Rol::where([['nombre', $nombre], ['id', '!=', $id]])->exists();

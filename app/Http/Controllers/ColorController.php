@@ -51,7 +51,7 @@ class ColorController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $existeColor = Color::where('nombre', $nombre)->exists();
         $response = array();
 
@@ -115,7 +115,7 @@ class ColorController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $response = array();
 
         $existeColor = Color::where('nombre', $nombre)->exists();

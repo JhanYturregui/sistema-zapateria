@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/modelos'
+
 /************ MODELOS **************/
 // MODAL CREAR
 function crearModelo(){
@@ -27,17 +32,21 @@ $('#btnCrearModelo').click(function(){
             url: 'modelos/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearModelo').modal('hide')
-                    location.replace(APP_URI+'/modelos')
-                    
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoModelo').text(res.mensaje)
+                    $('#campoModelo').text(a.mensaje)
                     $('#campoModelo').css('display', 'inline')
+                    $('#nombreModelo').focus()
                 }
+            },
+            error: function(e){
+                $('#campoModelo').text(e.message)
+                $('#campoModelo').css('display', 'inline')
+                $('#nombreModelo').focus()
             }   
         })
     }
@@ -89,17 +98,21 @@ $('#btnActualizarModelo').click(function(){
             url: 'modelos/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarModelo').modal('hide')
-                    location.replace(APP_URI+'/modelos')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
-                    $('#campoModeloA').text(res.mensaje)
+                    $('#campoModeloA').text(a.mensaje)
                     $('#campoModeloA').css('display', 'inline')
                     $('#nombreModeloA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoModeloA').text(e.message)
+                $('#campoModeloA').css('display', 'inline')
+                $('#nombreModeloA').focus()
             }   
         })
     }
@@ -128,7 +141,7 @@ $('#btnEliminarModelo').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarModelo').modal('hide')
-            location.replace(APP_URI+'/modelos')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

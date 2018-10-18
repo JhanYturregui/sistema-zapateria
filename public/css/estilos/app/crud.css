@@ -88,6 +88,14 @@
     font-weight: bold;
     display: none;
 }
+.validar-campo-lg{
+    color: #d50000;
+    margin: 0 !important;
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+    display: none;
+    font-size: 1em;
+}
 .alertas{
     width: 20%;
     height: auto;

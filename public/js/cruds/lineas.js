@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/lineas'
+
 /************ LÍNEAS **************/
 // MODAL CREAR
 function crearLinea(){
@@ -27,17 +32,21 @@ $('#btnCrearLinea').click(function(){
             url: 'lineas/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearLinea').modal('hide')
-                    location.replace(APP_URI+'/lineas')
-                    
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoLinea').text(res.mensaje)
+                    $('#campoLinea').text(a.mensaje)
                     $('#campoLinea').css('display', 'inline')
+                    $('#nombreLinea').focus()
                 }
+            },
+            error: function(e){
+                $('#campoLinea').text(e.message)
+                $('#campoLinea').css('display', 'inline')
+                $('#nombreLinea').focus()
             }   
         })
     }
@@ -89,17 +98,21 @@ $('#btnActualizarLinea').click(function(){
             url: 'lineas/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarLinea').modal('hide')
-                    location.replace(APP_URI+'/lineas')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
-                    $('#campoLineaA').text(res.mensaje)
+                    $('#campoLineaA').text(a.mensaje)
                     $('#campoLineaA').css('display', 'inline')
                     $('#nombreLineaA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoLineaA').text(e.message)
+                $('#campoLineaA').css('display', 'inline')
+                $('#nombreLineaA').focus()
             }   
         })
     }
@@ -128,7 +141,7 @@ $('#btnEliminarLinea').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarLinea').modal('hide')
-            location.replace(APP_URI+'/lineas')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

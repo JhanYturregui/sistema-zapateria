@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/usuarios'
+
 /************ USUARIOS **************/
 // MODAL CREAR
 function crearUsuario(){
@@ -37,18 +42,21 @@ $('#btnCrearUsuario').click(function(){
             url: 'usuarios/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                console.log(res)
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearUsuario').modal('hide')
-                    location.replace(APP_URI+'/usuarios')
+                    location.replace(URI_CREAR)
 
                 }else{
-                    $('#campoNumeroDoc').text(res.mensaje)
+                    $('#campoNumeroDoc').text(a.mensaje)
                     $('#campoNumeroDoc').css('display', 'inline')
                     $('#numeroDoc').focus()
                 }
+            },
+            error: function(e){
+                $('#campoNumeroDoc').text(e.message)
+                $('#campoNumeroDoc').css('display', 'inline')
+                $('#numeroDoc').focus()
             }
         })
     }
@@ -108,18 +116,21 @@ $('#btnActualizarUsuario').click(function(){
             url: 'usuarios/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                console.log(res)
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarUsuario').modal('hide')
-                    location.replace(APP_URI+'/usuarios')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
                     $('#campoUsuarioA').text(res.mensaje)
                     $('#campoUsuarioA').css('display', 'inline')
                     $('#usuarioA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoUsuarioA').text(e.message)
+                $('#campoUsuarioA').css('display', 'inline')
+                $('#usuarioA').focus()
             }
         })
     }
@@ -148,7 +159,7 @@ $('#btnEliminarUsuario').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarUsuario').modal('hide')
-            location.replace(APP_URI+'/usuarios')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

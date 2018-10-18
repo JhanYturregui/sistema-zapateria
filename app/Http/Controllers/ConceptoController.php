@@ -3,21 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Marca;
+use App\Concepto;
 
-class MarcaController extends Controller
+class ConceptoController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('paginas');
-        $this->middleware('auth');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -27,10 +16,11 @@ class MarcaController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
-        $marcas = Marca::where('estado', true)->orderBy('id', 'desc')->paginate(10);
 
-        return view('base.marcas', ['marcas' => $marcas, 
-                                    'datos'  => $datos]);
+        $conceptos = Concepto::where('estado', true)->orderBy('id', 'desc')->paginate(10);
+
+        return view('base.conceptos', ['conceptos'=> $conceptos, 
+                                        'datos'   => $datos]); 
     }
 
     /**
@@ -52,31 +42,36 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $nombre = mb_strtoupper($request->get('nombre'));
-        $existeMarca = Marca::where('nombre', $nombre)->exists();
+        $tipo = $request->get('tipo');
+
+        $existeConcepto = Concepto::where('nombre', $nombre)->exists();
         $response = array();
 
-        if($existeMarca){
-            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($marcaActivo){
+        if($existeConcepto){
+            $conceptoActivo = Concepto::where([['nombre', $nombre], ['estado', true]])->exists();
+            if($conceptoActivo){
                 $response["estado"] = false;
-                $response["mensaje"] = "La marca ya se encuentra registrada";
+                $response["mensaje"] = "El concepto ya se encuentra registrado";
 
             }else{
-                $marca = Marca::where('nombre', $nombre)->first();
-                $marca->estado = true;
-                $marca->save();
+                $concepto = Concepto::where('nombre', $nombre)->first();
+                $concepto->estado = true;
+                $concepto->save();
+
                 $response["estado"] = true;
                 $response["mensaje"] = "";
             }
 
         }else{
-            $marca = new Marca();
-            $marca->nombre = $nombre;
-            $marca->estado = true;
-            $marca->save();
+            $concepto = new Concepto();
+            $concepto->nombre = $nombre;
+            $concepto->tipo = $tipo;
+            $concepto->estado = true;
+            $concepto->save();
+
             $response["estado"] = true;
             $response["mensaje"] = "";
-        }   
+        }
 
         return json_encode($response);
     }
@@ -101,9 +96,9 @@ class MarcaController extends Controller
     public function edit(Request $request)
     {
         $id = $request->get('id');
-        $marca = Marca::where([['id', $id], ['estado', true]])->first();
+        $concepto = Concepto::where('id', $id)->first();
 
-        return json_encode($marca);
+        return json_encode($concepto);
     }
 
     /**
@@ -117,29 +112,24 @@ class MarcaController extends Controller
     {
         $id = $request->get('id');
         $nombre = mb_strtoupper($request->get('nombre'));
+        $tipo = $request->get('tipo');
+
         $response = array();
 
-        $existeMarca = Marca::where('nombre', $nombre)->exists();
-        if($existeMarca){
-            $marcaActivo = Marca::where([['nombre', $nombre], ['estado', true]])->exists();
-            if($marcaActivo){
-                $response['estado'] = false;
-                $response['mensaje'] = "La marca ya se encuentra registrada";
-
-            }else{
-                $marca = Marca::where('nombre', $nombre)->first();
-                $marca->estado = true;
-                $marca->save();
-                $response['estado'] = true;
-                $response['mensaje'] = "";
-            }
+        $existeConcepto = Concepto::where([['nombre', $nombre], ['id', '!=', $id]])->exists();
+        
+        if($existeConcepto){
+            $response["estado"] = false;
+            $response["mensaje"] = "El concepto ya se encuentra registrado";
 
         }else{
-            $marca = Marca::where([['id', $id], ['estado', true]])->first();
-            $marca->nombre = $nombre;
-            $marca->save();
-            $response['estado'] = true;
-            $response['mensaje'] = "";
+            $concepto = Concepto::where('id', $id)->first();
+            $concepto->nombre = $nombre;
+            $concepto->tipo = $tipo;
+            $concepto->save();
+
+            $response["estado"] = true;
+            $response["mensaje"] = "";
         }
 
         return json_encode($response);
@@ -155,8 +145,8 @@ class MarcaController extends Controller
     {
         $id = $request->get('id');
 
-        $marca = Marca::where([['id', $id], ['estado', true]])->first();
-        $marca->estado = false;
-        $marca->save();
+        $concepto = Concepto::where('id', $id)->first();
+        $concepto->estado = false;
+        $concepto->save();
     }
 }

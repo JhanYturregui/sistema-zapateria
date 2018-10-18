@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Acceso;
 use App\Categoria;
 use App\Opcion;
@@ -87,7 +88,15 @@ class AccesoController extends Controller
         $opciones = array(); 
         $usuario = Auth::user();
         $tipoUsuario = $usuario->tipo;
-        $accesos = Acceso::where([['tipo_usuario', $tipoUsuario], ['estado', true]])->get();
+        $accesos = DB::table('accesos')
+                   ->join('opciones', 'opciones.id', '=', 'accesos.opcion')
+                   ->join('categorias', 'categorias.id', '=', 'opciones.categoria')
+                   ->select('accesos.*', 'categorias.orden as orden_categoria')
+                   ->where('accesos.tipo_usuario', $tipoUsuario)
+                   ->where('accesos.estado', true)
+                   ->orderBy('categorias.orden', 'asc')
+                   ->orderBy('opciones.orden', 'asc')
+                   ->get();
 
         foreach ($accesos as $acceso) {
             $idOpcion = $acceso->opcion;
@@ -138,6 +147,21 @@ class AccesoController extends Controller
                     break;    
                 case 14:
                     $ruta = "productos";
+                    break;    
+                case 15:
+                    $ruta = "sucursales";
+                    break;    
+                case 16:
+                    $ruta = "conceptos";
+                    break;    
+                case 17:
+                    $ruta = "documentos_almacen";
+                    break;    
+                case 18:
+                    $ruta = "documentos_venta";
+                    break;    
+                case 19:
+                    $ruta = "caja";
                     break;    
                 
                 default:

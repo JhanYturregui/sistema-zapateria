@@ -1,4 +1,9 @@
-APP_URI = "http://localhost:8000"
+var origin = window.location.origin
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/colores'
+
 /************ COLORES **************/
 // MODAL CREAR
 function crearColor(){
@@ -27,17 +32,22 @@ $('#btnCrearColor').click(function(){
             url: 'colores/crear',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalCrearColor').modal('hide')
-                    location.replace(APP_URI+'/colores')
+                    location.replace(URI_CREAR)
                     
 
                 }else{
-                    $('#campoColor').text(res.mensaje)
+                    $('#campoColor').text(a.mensaje)
                     $('#campoColor').css('display', 'inline')
+                    $('#nombreColor').focus()
                 }
+            },
+            error: function(e){
+                $('#campoColor').text(e.message)
+                $('#campoColor').css('display', 'inline')
+                $('#nombreColor').focus()
             }   
         })
     }
@@ -88,17 +98,21 @@ $('#btnActualizarColor').click(function(){
             url: 'colores/actualizar',
             dataType: 'json',
             data,
-            complete: function(a){
-                res = a.responseJSON
-                if(res.estado){
+            success: function(a){
+                if(a.estado){
                     $('#modalEditarColor').modal('hide')
-                    location.replace(APP_URI+'/colores')
+                    location.replace(URI_ACTUALIZAR)
 
                 }else{
-                    $('#campoColorA').text(res.mensaje)
+                    $('#campoColorA').text(a.mensaje)
                     $('#campoColorA').css('display', 'inline')
                     $('#nombreColorA').focus()
                 }
+            },
+            error: function(e){
+                $('#campoColorA').text(e.message)
+                $('#campoColorA').css('display', 'inline')
+                $('#nombreColorA').focus()
             }   
         })
     }

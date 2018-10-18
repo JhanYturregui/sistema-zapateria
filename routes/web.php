@@ -151,6 +151,10 @@ Route::delete('/personas/eliminar', [
     'uses' => 'PersonaController@destroy',
     'as'   => 'eliminar_persona'
 ]);
+Route::post('/personas/buscar', [
+    'uses' => 'PersonaController@buscarPersona',
+    'as'   => 'buscar_persona'
+]);
 
 /****** Rutas USUARIOS *****/
 Route::get('/usuarios', [
@@ -326,4 +330,106 @@ Route::patch('/productos/actualizar', [
 Route::delete('/productos/eliminar', [
     'uses' => 'ProductoController@destroy',
     'as'   => 'eliminar_producto'
+]);
+Route::post('/productos/buscar', [
+    'uses' => 'ProductoController@buscarProductos',
+    'as'   => 'buscar_producto'
+]);
+Route::post('/productos/buscar_pro', [
+    'uses' => 'ProductoController@buscarProducto',
+    'as'   => 'buscar_producto_codigo'
+]);
+Route::post('/productos/buscar_pro_ventas', [
+    'uses' => 'ProductoController@buscarProductosVentas',
+    'as'   => 'buscar_producto_codigo'
+]);
+
+/****** Rutas SUCURSALES *****/
+Route::get('/sucursales', [
+    'uses' => 'SucursalController@index',
+    'as'   => 'sucursales'
+]);
+Route::post('/sucursales/crear', [
+    'uses' => 'SucursalController@store',
+    'as'   => 'crear_sucursal'
+]);
+Route::post('/sucursales/editar', [
+    'uses' => 'SucursalController@edit',
+    'as'   => 'editar_sucursal'
+]);
+Route::patch('/sucursales/actualizar', [
+    'uses' => 'SucursalController@update',
+    'as'   => 'actualizar_sucursal'
+]);
+Route::delete('/sucursales/eliminar', [
+    'uses' => 'SucursalController@destroy',
+    'as'   => 'eliminar_sucursal'
+]);
+
+/****** Rutas CONCEPTOS *****/
+Route::get('/conceptos', [
+    'uses' => 'ConceptoController@index',
+    'as'   => 'conceptos'
+]);
+Route::post('/conceptos/crear', [
+    'uses' => 'ConceptoController@store',
+    'as'   => 'crear_concepto'
+]);
+Route::post('/conceptos/editar', [
+    'uses' => 'ConceptoController@edit',
+    'as'   => 'editar_concepto'
+]);
+Route::patch('/conceptos/actualizar', [
+    'uses' => 'ConceptoController@update',
+    'as'   => 'actualizar_concepto'
+]);
+Route::delete('/conceptos/eliminar', [
+    'uses' => 'ConceptoController@destroy',
+    'as'   => 'eliminar_concepto'
+]);
+
+/****** Rutas DOCUMENTOS DE ALMACÉN *****/
+Route::get('/documentos_almacen', [
+    'uses' => 'DocumentoAlmacenController@index',
+    'as'   => 'documentos_almacen'
+]);
+Route::post('/documentos_almacen/crear', [
+    'uses' => 'DocumentoAlmacenController@store',
+    'as'   => 'crear_documento_almacen'
+]);
+Route::delete('/documentos_almacen/anular', [
+    'uses' => 'DocumentoAlmacenController@anularDocumento',
+    'as'   => 'anular_documento_almacen'
+]);
+
+/****** Rutas DOCUMENTOS DE VENTA *****/
+Route::get('/documentos_venta', [
+    'uses' => 'DocumentoVentaController@index',
+    'as'   => 'documentos_venta'
+]);
+Route::post('/documentos_venta/crear', [
+    'uses' => 'DocumentoVentaController@store',
+    'as'   => 'crear_documento_venta'
+]);
+Route::delete('/documentos_venta/eliminar', [
+    'uses' => 'DocumentoVentaController@destroy',
+    'as'   => 'eliminar_documento_venta'
+]);
+
+/****** Rutas CAJA *****/
+Route::get('/caja', [
+    'uses' => 'CajaController@index',
+    'as'   => 'caja'
+]);
+Route::post('/caja/aperturar', [
+    'uses' => 'CajaController@aperturarCaja',
+    'as'   => 'aperturar_caja'
+]);
+Route::post('/caja/cerrar', [
+    'uses' => 'CajaController@cerrarCaja',
+    'as'   => 'cerrar_caja'
+]);
+Route::post('/caja/conceptos', [
+    'uses' => 'CajaController@listarConceptos',
+    'as'   => 'conceptos_caja'
 ]);

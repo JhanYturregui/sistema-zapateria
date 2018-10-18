@@ -187,4 +187,32 @@ class PersonaController extends Controller
         $persona->estado = false;
         $persona->save();
     }
+
+    /**
+     * Buscar persona por número de documento
+     * 
+     * @param Request $request
+     * @return JSON $response
+     */
+    public function buscarPersona(Request $request){
+        $numeroDoc = $request->get('numeroDoc');
+        $response = array();
+
+        $existePersona = Persona::where([['numero_documento', $numeroDoc], ['estado', true]])->exists();
+        if($existePersona){
+            $persona = Persona::where([['numero_documento', $numeroDoc], ['estado', true]])->first();
+            $nombres = $persona->nombres;
+            $apellidos = $persona->apellidos;
+
+            $response["estado"] = true;
+            $response["mensaje"] = $nombres." ".$apellidos;
+
+        }else{
+            $response["estado"] = false;
+            $response["mensaje"] = "La persona no se encuentra registrada";
+        }
+
+        return json_encode($response);
+    }
+
 }

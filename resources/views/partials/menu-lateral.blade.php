@@ -3,9 +3,9 @@
     <div class="contenido-lateral">
 
         <!-- CABECERA -->
-        <div class="cabecera-lateral">
+        <!--<div class="cabecera-lateral">
 
-        </div>
+        </div>-->
 
         <!-- CUERPO -->
         <div class="cuerpo-lateral">

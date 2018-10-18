@@ -64,7 +64,7 @@ class OpcionController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $categoria = $request->get('categoria');
         $orden = $request->get('orden');
         //$icono = $request->get('icono');
@@ -138,7 +138,7 @@ class OpcionController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $categoria = $request->get('categoria');
         $orden = $request->get('orden');
         //$icono = $request->get('icono');
@@ -156,11 +156,11 @@ class OpcionController extends Controller
             $opcion->nombre = $nombre;
             $opcion->categoria = $categoria;
             $opcion->orden = $orden;
-            //$opcion->icono = $icono;
+            //$opcion->icono = "";
             $opcion->save();
 
-            $reponse["estado"] = true;
-            $reponse["mensaje"] = "";
+            $response["estado"] = true;
+            $response["mensaje"] = "";
         }
 
         return json_encode($response);

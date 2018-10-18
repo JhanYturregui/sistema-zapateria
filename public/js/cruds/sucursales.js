@@ -2,50 +2,47 @@ var origin = window.location.origin
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/opciones'
+URI_CREAR = origin+'/sucursales'
 
-/************ OPCIONES **************/
+/************ SUCURSALES **************/
 // MODAL CREAR
-function crearOpcion(){
-    $('#modalCrearOpcion').modal({
+function crearSucursal(){
+    $('#modalCrearSucursal').modal({
         keyboard: false,
         backdrop: 'static'
     })
 }
 
 // CREAR 
-$('#btnCrearOpcion').click(function(){
-    var nombre = $('#nombreOpcion').val()
-    var categoria = $('#categoria').val()
-    var orden = $('#ordenOpcion').val()
-    //var icono = $('#iconoOpcion').val()
+$('#btnCrearSucursal').click(function(){
+    var nombre = $('#nombreSucursal').val()
+    var direccion = $('#direccionSucursal').val()
     
     if(nombre == ""){
         $('#campoNombre').text('Campo obligatorio')
         $('#campoNombre').css('display', 'inline')
-        $('#nombreOpcion').focus()
+        $('#nombreSucursal').focus()
 
     }else{
         var data = {
             nombre,
-            categoria,            
-            orden,
+            direccion,            
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
             type: 'post',
-            url: 'opciones/crear',
+            url: 'sucursales/crear',
             dataType: 'json',
             data,
             success: function(a){
                 if(a.estado){
-                    $('#modalCrearOpcion').modal('hide')
+                    $('#modalCrearSucursal').modal('hide')
                     location.replace(URI_CREAR)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
                     $('#campoNombre').css('display', 'inline')
-                    $('#nombreOpcion').focus()
+                    $('#nombreSucursal').focus()
                 }
             },
             error: function(e){
@@ -57,10 +54,10 @@ $('#btnCrearOpcion').click(function(){
 })
 
 // MODAL EDITAR
-function editarOpcion(id){
+function editarSucursal(id){
     $.ajax({
         type: 'post',
-        url: 'opciones/editar',
+        url: 'sucursales/editar',
         dataType: 'json',
         data: {
             id,
@@ -69,17 +66,13 @@ function editarOpcion(id){
         complete: function(res){
             var data = res.responseJSON
             var nombre = data.nombre
-            var categoria = data.categoria
-            var orden = data.orden
-            //var icono = data.icono
+            var direccion = data.direccion
 
-            $('#nombreOpcionA').val(nombre)
-            $('#categoriaA').val(categoria)
-            $('#ordenOpcionA').val(orden)
-            //$('#iconoOpcionA').val(icono)
-            $('#idOpcionA').val(id)
+            $('#nombreSucursalA').val(nombre)
+            $('#direccionSucursalA').val(direccion)
+            $('#idSucursalA').val(id)
 
-            $('#modalEditarOpcion').modal({
+            $('#modalEditarSucursal').modal({
                 keyboard: false,
                 backdrop: 'static'
             })
@@ -88,74 +81,71 @@ function editarOpcion(id){
 }
 
 // ACTUALIZAR 
-$('#btnActualizarOpcion').click(function(){
-    var id = $('#idOpcionA').val()
-    var nombre = $('#nombreOpcionA').val()
-    var categoria = $('#categoriaA').val()
-    var orden = $('#ordenOpcionA').val()
-    //var icono = $('#iconoOpcionA').val()
+$('#btnActualizarSucursal').click(function(){
+    var id = $('#idSucursalA').val()
+    var nombre = $('#nombreSucursalA').val()
+    var direccion = $('#direccionSucursalA').val()
     
     if(nombre == ""){
         $('#campoNombreA').css('display', 'inline')
-        $('#nombreOpcionA').focus()
+        $('#nombreSucursalA').focus()
 
     }else{
         var data = {
             id,
             nombre,
-            categoria,
-            orden,
+            direccion,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
             type: 'patch',
-            url: 'opciones/actualizar',
+            url: 'sucursales/actualizar',
             dataType: 'json',
             data,
             success: function(a){
                 if(a.estado){
-                    $('#modalEditarOpcion').modal('hide')
+                    $('#modalEditarSucursal').modal('hide')
                     location.replace(URI_ACTUALIZAR)
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
                     $('#campoNombreA').css('display', 'inline')
-                    $('#nombreOpcionA').focus()
+                    $('#nombreSucursalA').focus()
                 }
             },
             error: function(e){
                 $('#campoNombreA').text(e.message)
                 $('#campoNombreA').css('display', 'inline')
-                $('#nombreOpcionA').focus()
+                $('#nombreSucursalA').focus()
             }   
         })
     }
 })
 
 // MODAL ELIMINAR
-function eliminarOpcion(id){
-    $('#idOpcionE').val(id)
-    $('#modalEliminarOpcion').modal({
+function eliminarSucursal(id){
+    $('#idSucursalE').val(id)
+    $('#modalEliminarSucursal').modal({
         keyboard: false,
         backdrop: 'static'
     })
 }
 
 // ELIMINAR 
-$('#btnEliminarOpcion').click(function(){
-    var id = $('#idOpcionE').val()
+$('#btnEliminarSucursal').click(function(){
+    var id = $('#idSucursalE').val()
     var data = {
         id,
         _token: $('input[name=_token]').val(),
     }
     $.ajax({
         type: 'delete',
-        url: 'opciones/eliminar',
+        url: 'sucursales/eliminar',
         dataType: 'json',
         data,
         complete: function(a){
-            $('#modalEliminarOpcion').modal('hide')
-            location.replace(APP_URI+'/opciones')
+            $('#modalEliminarSucursal').modal('hide')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 })

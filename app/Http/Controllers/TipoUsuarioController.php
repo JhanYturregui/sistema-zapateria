@@ -60,7 +60,7 @@ class TipoUsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        $nombre = strtoupper($request->get('nombre'));
+        $nombre = mb_strtoupper($request->get('nombre'));
         $existeTipo = TipoUsuario::where('nombre', $nombre)->exists();
         $response = array();
 
@@ -123,7 +123,7 @@ class TipoUsuarioController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $nombre = $request->get('nombre');
+        $nombre = mb_strtoupper($request->get('nombre'));
     
         $tipoUsuario = TipoUsuario::where([['id', $id], ['estado', true]])->first();
         $tipoUsuario->nombre = $nombre;

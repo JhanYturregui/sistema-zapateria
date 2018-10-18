@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Producto;
 use App\Marca;
 use App\Modelo;
@@ -134,16 +136,16 @@ class ProductoController extends Controller
             $response["estado"] = true;
             $response["mensaje"] = "";
 
-            /* Tabla INVENTARIO 
+            // Tabla INVENTARIO 
             $inventario = new Inventario();
             $inventario->codigo_producto = $codigo;
-            $inventario->sucursal = 1;
+            $inventario->sucursal = Auth::user()->sucursal;
             $inventario->cantidad= 0;
             $inventario->estado = true;
             $inventario->save();
             
             $response["estado"] = true;
-            $response["mensaje"] = "";*/
+            $response["mensaje"] = "";
         }
 
         return json_encode($response);
@@ -266,4 +268,65 @@ class ProductoController extends Controller
         }
         return $codigo;
     } 
+
+    /**
+     * Buscar productos por código
+     * @param Request $request
+     * @return json $productos
+     */
+    public function buscarProductos(Request $request){
+        $codigo = mb_strtoupper($request->get('codigo'));
+        //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
+        $productos = DB::table('productos')
+                     ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
+                     ->select('productos.*', 'inventario.cantidad as cantidad')
+                     ->where('productos.codigo', 'LIKE', $codigo.'%')
+                     ->where('productos.estado', true)
+                     ->get();
+
+        return json_encode($productos);
+    }
+
+    /**
+     * Buscar productos para ventas por código
+     * @param Request $request
+     * @return json $productos
+     */
+    public function buscarProductosVentas(Request $request){
+        $codigo = mb_strtoupper($request->get('codigo'));
+        //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
+        $productos = DB::table('productos')
+                     ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
+                     ->select('productos.*', 'inventario.cantidad as cantidad')
+                     ->where('productos.codigo', 'LIKE', $codigo.'%')
+                     ->where('inventario.cantidad', '>', 0)
+                     ->where('productos.estado', true)
+                     ->get();
+
+        return json_encode($productos);
+    }
+
+    /**
+     * Buscar producto por código
+     * @param Request $request
+     * @return json $producto
+     */
+    public function buscarProducto(Request $request){
+        $codigo = mb_strtoupper($request->get('codigo'));
+        $producto = DB::table('productos')
+                    ->join('marcas', 'marcas.id', '=', 'productos.marca')
+                    ->join('modelos', 'modelos.id', '=', 'productos.modelo')
+                    ->join('colores', 'colores.id', '=', 'productos.color')
+                    ->join('tallas', 'tallas.id', '=', 'productos.talla')
+                    ->join('lineas', 'lineas.id', '=', 'productos.linea')
+                    ->select('productos.codigo', 'productos.precio_compra', 'productos.precio_venta',
+                             'marcas.nombre as marca', 'modelos.nombre as modelo',
+                             'colores.nombre as color', 'tallas.nombre as talla',
+                             'lineas.nombre as linea')
+                    ->where('productos.codigo', $codigo)         
+                    ->first();
+
+        return json_encode($producto);
+    }
+
 }
