@@ -433,3 +433,7 @@ Route::post('/caja/conceptos', [
     'uses' => 'CajaController@listarConceptos',
     'as'   => 'conceptos_caja'
 ]);
+Route::post('/caja/generar_movimiento', [
+    'uses' => 'CajaController@generarMovimiento',
+    'as'   => 'movimiento_caja'
+]);

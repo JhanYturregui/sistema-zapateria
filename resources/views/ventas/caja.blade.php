@@ -23,25 +23,25 @@
     <div class="datos">
             <div class="card text-center">
                 <div class="card-header">
-                    <h3>Listado de Cajas</h3>
+                    <h3>Listado de Movimientos</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Numero</th>
-                                <th>Fecha Apertura</th>
-                                <th>Fecha Cierre</th>
+                                <th>Tipo</th>
+                                <th>Fecha</th>
                                 <th>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cajas as $caja)
+                            @foreach ($movimientos as $movimiento)
                                 <tr>
-                                    <td>{{ $caja->numero }}</td>
-                                    <td>{{ $caja->created_at }}</td>
-                                    <td>{{ $caja->updated_at }}</td>
-                                    <td>{{ $caja->monto_real }}</td>
+                                    <td>{{ $movimiento->numero }}</td>
+                                    <td>{{ $movimiento->tipo }}</td>
+                                    <td>{{ $movimiento->created_at }}</td>
+                                    <td>{{ $movimiento->monto }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -52,7 +52,7 @@
         </div>
     
         <div class="paginacion">
-            {{ $cajas->links() }}
+            {{ $movimientos->links() }}
         </div>
     
 </div>

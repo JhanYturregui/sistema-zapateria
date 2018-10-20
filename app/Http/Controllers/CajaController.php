@@ -32,8 +32,8 @@ class CajaController extends Controller
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
 
-        $cajas = Caja::where('estado', false)->orderBy('id', 'desc')->paginate(10);
-
+        //$cajas = Caja::where('estado', false)->orderBy('id', 'desc')->paginate(10);
+        
         $sucursal = Auth::user()->sucursal;
         $caja = Caja::orderBy('id', 'desc')->first();
         
@@ -54,13 +54,26 @@ class CajaController extends Controller
             }else{
                 $numeroCaja = $cajaAbierta->numero;
                 $aperturado = true;
-                $ventas = DocumentoVenta::where('numero_caja', $numeroCaja)->get(); 
                 $montoCierre = 0;
+
+                $ventas = DocumentoVenta::where('numero_caja', $numeroCaja)->get(); 
                 foreach ($ventas as $key => $value) {
                     $montoCierre = $montoCierre + $value->monto_total;
                 }
+
+                $movimientos = MovimientoCaja::where('numero_caja', $numeroCaja)->get();
+                foreach ($movimientos as $key => $value) {
+                    $tipo = $value->tipo;
+                    if($tipo == 'ingreso'){
+                        $montoCierre = $montoCierre + $value->monto;
+                    }else{
+                        $montoCierre = $montoCierre - $value->monto;
+                    }
+                }
             }
         }
+
+        $movimientos = MovimientoCaja::where([['numero_caja', $numeroCaja], ['estado', true]])->paginate(10);
 
         $movimientoCaja = MovimientoCaja::orderBy('id', 'desc')->first();
         if($movimientoCaja == null){
@@ -73,7 +86,7 @@ class CajaController extends Controller
         }
 
         return view('ventas.caja', ['datos' => $datos,
-                                    'cajas' => $cajas,
+                                    'movimientos' => $movimientos,
                                     'aperturado' => $aperturado,
                                     'numeroCaja' => $numeroCaja,
                                     'montoCierre' => $montoCierre,
@@ -146,6 +159,40 @@ class CajaController extends Controller
                      ->get();
         
         return json_encode($conceptos);
+    }
+
+    /**
+     * Generar movimiento de caja
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function generarMovimiento(Request $request){
+        date_default_timezone_set('America/Lima');
+        $numero = $request->get('numero');
+        $tipo = $request->get('tipo');
+        $concepto = $request->get('concepto');
+        $persona = $request->get('persona');
+        $monto = $request->get('monto');
+        $comentario = $request->get('comentario');
+        
+        $caja = Caja::where('estado', true)->first();
+        $numeroCaja = $caja->numero;
+
+        $movimiento = new MovimientoCaja();
+        $movimiento->numero = $numero;
+        $movimiento->tipo = $tipo;
+        $movimiento->concepto = $concepto;
+        $movimiento->doc_persona = $persona;
+        $movimiento->monto = $monto;
+        $movimiento->comentario = $comentario;
+        $movimiento->numero_caja = $numeroCaja;
+        $movimiento->estado = true;
+        $movimiento->save();
+
+        $response = array();
+        $response["estado"] = true;
+        
+        return json_encode($response);
     }
 
 }

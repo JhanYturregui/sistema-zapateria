@@ -135,7 +135,7 @@ $('#btnRegistrarMovimiento').click(function(){
     var tipo = $('#tipoMovimiento').val()
     var concepto = $('#conceptoMovimiento').val()
     var persona = $('#persona').val()
-    var monto = $('#montoMovimiento').val()
+    var monto = parseFloat($('#montoMovimiento').val())
     var comentario = $('#comentarioMovimiento').val()
 
     if(persona == ''){
@@ -149,6 +149,26 @@ $('#btnRegistrarMovimiento').click(function(){
 
     }else{
         $('#campoMonto').css('display', 'none')
+
+        var data = {
+                    numero, tipo, concepto, persona, monto, comentario, 
+                    _token: $('input[name=_token]').val()
+                   }
+
+        $.ajax({
+            type: 'post',
+            url: 'caja/generar_movimiento',
+            dataType: 'json',
+            data,
+            success: function(a){
+                if(a.estado){
+                    location.replace(URI_CREAR)
+                }
+            },
+            error: function(e){
+                console.log(e)
+            }
+        })
         
     }
 

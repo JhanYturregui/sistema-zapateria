@@ -21,6 +21,7 @@ class CreateMovimientosCajaTable extends Migration
             $table->string('doc_persona');
             $table->double('monto', 8, 2);
             $table->string('comentario')->nullable();
+            $table->string('numero_caja');
             $table->boolean('estado');
             $table->timestamps();
         });
