@@ -33,6 +33,10 @@
                                 <th>Tipo</th>
                                 <th>Fecha</th>
                                 <th>Monto</th>
+                                <th>N° Caja</th>
+                                @if (Auth::user()->tipo == 1)
+                                    <th>Acción</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -42,6 +46,10 @@
                                     <td>{{ $movimiento->tipo }}</td>
                                     <td>{{ $movimiento->created_at }}</td>
                                     <td>{{ $movimiento->monto }}</td>
+                                    <td>{{ $movimiento->numero_caja }}</td>
+                                    @if (Auth::user()->tipo == 1)
+                                        <td><i class="fas fa-trash" onclick="anularMovimiento('{{$movimiento->numero}}')"></i></td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -93,7 +101,9 @@
                     <div class="form-group row">
                         <label for="montoApertura" class="col-sm-3 col-form-label">Monto Apertura</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="montoApertura">
+                            <input type="text" class="form-control" id="montoApertura" onkeyup="numerosDecimales(event, this.id)">
+                            <small id="campoMontoApertura" class="help-block col-sm-offset-0 col-sm-12 validar-campo">
+                                Campo obligatorio</small>
                         </div>
                     </div>
                 </form>
@@ -148,7 +158,7 @@
                         <div class="form-group row">
                             <label for="montoReal" class="col-sm-3 col-form-label">Monto Real</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="montoReal">
+                                <input type="text" class="form-control" id="montoReal" value="{{$montoCierre}}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -162,7 +172,7 @@
     
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnCerrarCaja">Aperturar</button>
+                <button type="button" class="btn btn-danger" id="btnCerrarCaja">Cerrar</button>
             </div>
         </div>
     </div>
@@ -237,6 +247,32 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-success" id="btnRegistrarMovimiento">Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ANULAR MOVIMIENTO -->
+<div class="modal fade" id="modalAnularMovimiento" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <input type="hidden" id="numeroMovimiento">
+
+            <div class="modal-header cabecera-eliminar">
+                <h5 class="modal-title" id="">Anular</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                ¿Está seguro que desea anular este movimiento?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnAnularMovimiento">Anular</button>
             </div>
         </div>
     </div>

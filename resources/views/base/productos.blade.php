@@ -66,11 +66,16 @@
             <div class="modal-body">
                 <form>
                     <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="descripcion">Descripción</label>
-                            <input type="text" id="descripcion" class="form-control" placeholder="Descripción">
+                        <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="codigo">Código</label>
+                                </div>
+                                <input type="text" id="codigo" class="form-control" placeholder="Código Producto">
+                                <small id="campoCodigo" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="marca">Marca</label>
@@ -82,7 +87,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="modelo">Modelo</label>
@@ -94,7 +99,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="color">Color</label>
@@ -106,7 +111,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="talla">Talla</label>
@@ -118,7 +123,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="linea">Línea</label>
@@ -130,20 +135,28 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                    <label class="input-group-text" for="precioCompra">P. Compra</label>
                                 </div>
                                 <input type="text" class="form-control" id="precioCompra" placeholder="Precio compra" aria-label="Precio compra" aria-describedby="precioCompra">
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                  <label class="input-group-text" for="precioVenta">P. Venta</label>
                                 </div>
                                 <input type="text" class="form-control" id="precioVenta" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVenta">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="descripcion">Descripción</label>
+                                </div>
+                                <input type="text" id="descripcion" class="form-control" placeholder="Descripcion">
                             </div>
                         </div>
                         <div class="form-group col-md-12">
@@ -178,11 +191,16 @@
             <div class="modal-body">
                 <form>
                     <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="descripcionA">Descripción</label>
-                            <input type="text" id="descripcionA" class="form-control" placeholder="Descripción">
+                        <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="codigoA">Código</label>
+                                </div>
+                                <input type="text" id="codigoA" class="form-control" placeholder="Código Producto">
+                                <small id="campoCodigoA" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="marcaA">Marca</label>
@@ -194,7 +212,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="modeloA">Modelo</label>
@@ -206,7 +224,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="colorA">Color</label>
@@ -218,7 +236,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="tallaA">Talla</label>
@@ -230,7 +248,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="lineaA">Línea</label>
@@ -240,6 +258,30 @@
                                         <option value="{{$linea->id}}">{{$linea->nombre}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="precioCompraA">P. Compra</label>
+                                </div>
+                                <input type="text" class="form-control" id="precioCompraA" placeholder="Precio compra" aria-label="Precio compra" aria-describedby="precioCompra">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <label class="input-group-text" for="precioVentaA">P. Venta</label>
+                                </div>
+                                <input type="text" class="form-control" id="precioVentaA" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVenta">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="descripcionA">Descripción</label>
+                                </div>
+                                <input type="text" id="descripcionA" class="form-control" placeholder="Descripcion">
                             </div>
                         </div>
                         <div class="form-group col-md-12">

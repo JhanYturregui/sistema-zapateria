@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Persona;
 use App\TipoUsuario;
+use App\Sucursal;
 
 class UsuarioController extends Controller
 {
@@ -18,6 +21,7 @@ class UsuarioController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -30,11 +34,20 @@ class UsuarioController extends Controller
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
         $tiposUsuario = TipoUsuario::where('estado', true)->orderBy('id', 'desc')->get();
-        $usuarios = User::where('estado', true)->orderBy('id', 'desc')->paginate(10);
+        $sucursales = Sucursal::where('estado', true)->orderBy('id', 'asc')->get();
+        $tipoUsu = Auth::user()->tipo;
+        $usuarios = DB::table('usuarios')
+                    ->join('tipos_usuario', 'usuarios.tipo', '=', 'tipos_usuario.id')
+                    ->select('usuarios.*', 'tipos_usuario.nombre as tipo_usuario')
+                    ->where('usuarios.estado', true)
+                    ->where('usuarios.tipo', '>', $tipoUsu)
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
 
         return view('seguridad.usuarios', ['usuarios' => $usuarios, 
-                                      'tiposUsuario' => $tiposUsuario,
-                                      'datos' => $datos]);
+                                           'tiposUsuario' => $tiposUsuario,
+                                           'datos' => $datos,
+                                           'sucursales' => $sucursales]);
     }
 
     /**
@@ -58,6 +71,7 @@ class UsuarioController extends Controller
         $numeroDocumento = $request->get('numeroDocumento');
         $usuario = $request->get('usuario');
         $tipoUsuario = (int)$request->get('tipoUsuario');
+        $sucursal = $request->get('sucursal');
 
         $response = array();
         $esUsuario = false;
@@ -67,7 +81,7 @@ class UsuarioController extends Controller
         
         if($roles === null){
             $response["estado"] = false;
-            $response["mensaje"] = "El documento no tiene rol asignado";
+            $response["mensaje"] = "El documento no tiene rol usuario asignado";
 
         }else{
             foreach ($roles as $key => $value) {
@@ -106,6 +120,7 @@ class UsuarioController extends Controller
                     $nuevoUsuario->username = $usuario;
                     $nuevoUsuario->password = bcrypt("123456");
                     $nuevoUsuario->tipo = $tipoUsuario;
+                    $nuevoUsuario->sucursal = $sucursal;
                     $nuevoUsuario->estado = true;
                     $nuevoUsuario->save();
                     $response["estado"] = true;
@@ -115,7 +130,7 @@ class UsuarioController extends Controller
                 
             }else{
                 $response["estado"] = false;
-                $response["mensaje"] = "El documento ingresado no es de tipo usuario";
+                $response["mensaje"] = "El número de documento ingresado no tiene rol usuario";
             }
         }
 
@@ -159,6 +174,7 @@ class UsuarioController extends Controller
         $numeroDocumento = $request->get('numeroDocumento');
         $usuario = $request->get('usuario');
         $tipoUsuario = (int)$request->get('tipoUsuario');
+        $sucursal = $request->get('sucursal');
 
         $response = array();
 
@@ -181,6 +197,7 @@ class UsuarioController extends Controller
             $actUsuario = User::where('num_documento', $numeroDocumento)->first();
             $actUsuario->username = $usuario;
             $actUsuario->tipo = $tipoUsuario;
+            $actUsuario->sucursal = $sucursal;
             $actUsuario->estado = true;
             $actUsuario->save();
             $response["estado"] = true;

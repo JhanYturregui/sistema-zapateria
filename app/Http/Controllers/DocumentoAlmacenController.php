@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\DocumentoAlmacen;
 use App\Inventario;
+use App\Sucursal;
 
 class DocumentoAlmacenController extends Controller
 {
@@ -19,6 +20,7 @@ class DocumentoAlmacenController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -32,6 +34,7 @@ class DocumentoAlmacenController extends Controller
         $datos = $accesoController->obtenerMenus();
 
         $sucursal = Auth::user()->sucursal;
+        $sucursales = Sucursal::where([['estado', true], ['id', '!=', $sucursal ]])->orderBy('id', 'asc')->get();
         $documentos = DocumentoAlmacen::where('estado', true)->orderBy('created_at', 'desc')->paginate(10);
         $numeroDoc = DB::table('documentos_almacen')
                      ->select('numero')
@@ -47,7 +50,8 @@ class DocumentoAlmacenController extends Controller
 
         return view('ventas.documentos_almacen', ['documentos'=> $documentos, 
                                                   'numeroDoc' => $numeroDoc,
-                                                  'datos'     => $datos]); 
+                                                  'datos'     => $datos,
+                                                  'sucursales'=> $sucursales]); 
     }
 
     /**
@@ -70,6 +74,7 @@ class DocumentoAlmacenController extends Controller
     {
         $numeroDoc = $request->get('numeroDoc');
         $tipoDoc = $request->get('tipoDoc');
+        $suc = $request->get('sucursal');
         $comentario = $request->get('comentario');
         $productos = $request->get('productos');
         $dataProd = array();
@@ -135,6 +140,11 @@ class DocumentoAlmacenController extends Controller
         $documento = new DocumentoAlmacen();
         $documento->numero = $numeroDoc;
         $documento->tipo = $tipoDoc;
+        if($tipoDoc == 'ingreso'){
+            $documento->origen = $suc;
+        }else{
+            $documento->destino = $suc;
+        }
         $documento->usuario = Auth::user()->id;
         $documento->productos = $dataProd;
         $documento->cantidades = $cantProd;
@@ -146,40 +156,6 @@ class DocumentoAlmacenController extends Controller
         $response["mensaje"] = "";
 
         return json_encode($response);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -237,6 +213,7 @@ class DocumentoAlmacenController extends Controller
             }
         }
 
+        $documento->usuario_anulacion = Auth::user()->id;
         $documento->estado = false;
         $documento->save();
 
@@ -246,4 +223,5 @@ class DocumentoAlmacenController extends Controller
         return json_encode($response);
 
     }
+
 }

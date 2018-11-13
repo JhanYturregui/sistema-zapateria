@@ -1,4 +1,4 @@
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname
@@ -33,9 +33,10 @@ $('#btnRegistrarDocumentoVenta').click(function(){
             var aux = {}
             var codigo = prodSeleccionados[i]
             var cantidad = $('#cant-'+codigo).val()
+            var descuento = $('#desc-'+codigo).val()
 
             if(cantidad > 0){
-                aux = {codigo, cantidad}
+                aux = {codigo, cantidad, descuento}
                 productos.push(aux)
             }else{
                 boolCant = false 
@@ -141,6 +142,9 @@ function buscarProductos(codigo){
                     for(i=0; i<tamaño; i++){
                         codigo = data[i].codigo
                         descripcion = data[i].descripcion
+                        if(descripcion == null){
+                            descripcion = ""
+                        }
                         cantidad = data[i].cantidad
                         precio = data[i].precio_venta
 
@@ -169,6 +173,15 @@ function buscarProductos(codigo){
     }
 }
 
+
+function agregarProd(event, codigo){
+    tecla = event.keyCode
+    if(tecla == 13){
+        this.agregarProducto(codigo)
+    }
+}
+
+
 var total = parseFloat($('#cantTotal').val())
 // AGREGAR PRODUCTO
 function agregarProducto(codigo){
@@ -195,7 +208,9 @@ function agregarProducto(codigo){
                             '<td>'+data.talla+'</td>'+
                             '<td>'+data.linea+'</td>'+
                             '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                            '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal()" type="text" class="cantidad" value="1"/></td>'+
+                            '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                            '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
+                            '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                             '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>'+
                         '</tr>'
 
@@ -203,9 +218,18 @@ function agregarProducto(codigo){
                 $('#productosSeleccionados').css('display', 'inline')
                 $('#caja').css('display', 'inline')
 
+                //var precFinal = $('#final-'+data.codigo).val()
+                //console.log(precFinal) 
+                
                 total = total + parseFloat(data.precio_venta)
                 $('#cantTotal').val(total)
                 $('#cantEfectivo').val(total)
+
+                var prec = parseFloat($('#precio-'+data.codigo).text())
+                var cant = $('#cant-'+data.codigo).val()
+                var desc = $('#desc-'+data.codigo).val()
+                var precFinal = (prec*cant - desc).toFixed(2)
+                $('#final-'+data.codigo).val(precFinal)
 
             }else{
                 agregar = true
@@ -228,7 +252,9 @@ function agregarProducto(codigo){
                                 '<td>'+data.talla+'</td>'+
                                 '<td>'+data.linea+'</td>'+
                                 '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                                '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal()" type="text" class="cantidad" value="1"/></td>'+
+                                '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                                '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
+                                '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                                 '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>' 
 
                         row.append(fila)
@@ -243,7 +269,9 @@ function agregarProducto(codigo){
                                     '<td>'+data.talla+'</td>'+
                                     '<td>'+data.linea+'</td>'+
                                     '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                                    '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal()" type="text" class="cantidad" value="1"/></td>'+
+                                    '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                                    '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
+                                    '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                                     '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>'+
                                 '</tr>'
                         
@@ -253,10 +281,19 @@ function agregarProducto(codigo){
                     $('#productosSeleccionados').css('display', 'inline')
                     $('#caja').css('display', 'inline')
                     
+                    //var precFinal = $('#final-'+data.codigo).val()
+                    //console.log(precFinal) 
+
                     total = parseFloat($('#cantTotal').val())
                     total = total + parseFloat(data.precio_venta)
                     $('#cantTotal').val(total)
                     $('#cantEfectivo').val(total)    
+
+                    var prec = parseFloat($('#precio-'+data.codigo).text())
+                    var cant = $('#cant-'+data.codigo).val()
+                    var desc = $('#desc-'+data.codigo).val()
+                    var precFinal = (prec*cant - desc).toFixed(2)
+                    $('#final-'+data.codigo).val(precFinal)
 
                 }else{
                     var cantidad = parseInt($('#cant-'+data.codigo).val())
@@ -264,12 +301,21 @@ function agregarProducto(codigo){
                         cantidad = 0
                     }
                     var cantidad = cantidad + 1
+                    //var precFinal = $('#final-'+data.codigo).val()
+                    //console.log(precFinal) 
+
                     total = parseFloat($('#cantTotal').val())
                     total = total + parseFloat(data.precio_venta)
                     total = total.toFixed(2) 
                     $('#cantTotal').val(total)
                     $('#cantEfectivo').val(total)
                     $('#cant-'+data.codigo).val(cantidad)
+
+                    var prec = parseFloat($('#precio-'+data.codigo).text())
+                    var cant = $('#cant-'+data.codigo).val()
+                    var desc = $('#desc-'+data.codigo).val()
+                    var precFinal = (prec*cant - desc).toFixed(2)
+                    $('#final-'+data.codigo).val(precFinal)
                 }
             }
         },
@@ -281,11 +327,11 @@ function agregarProducto(codigo){
 
 // ELIMINAR PRODUCTO SELECCIONADO
 function eliminarProducto(codigo, precio){
-    var aux = $('#cant-'+codigo).val()
-    var aux2 = aux*parseFloat(precio)
-    var aux3 = parseFloat($('#cantTotal').val())
-    var nuevoTotal = aux3-aux2
-    $('#cantTotal').val(nuevoTotal)
+    //var aux = $('#cant-'+codigo).val()
+    //var aux2 = aux*parseFloat(precio)
+    //var aux3 = parseFloat($('#cantTotal').val())
+    //var nuevoTotal = aux3-aux2
+    //$('#cantTotal').val(nuevoTotal)
 
     $('#fila-'+codigo).html('')
     var i = prodSeleccionados.indexOf(codigo)
@@ -299,7 +345,15 @@ function eliminarProducto(codigo, precio){
         $('#caja').css('display', 'none')
     }
 
-    
+    var total = 0;    
+    for(i=0; i<prodSeleccionados.length; i++){
+        var precFinal = parseFloat($('#final-'+prodSeleccionados[i]).val())
+        total = total + precFinal
+    }
+    var nuevoTotal = total.toFixed(2)
+    $('#cantTotal').val(nuevoTotal)
+    $('#cantEfectivo').val(nuevoTotal)
+
 }
 
 
@@ -307,7 +361,7 @@ function eliminarProducto(codigo, precio){
 var cad = ""
 function soloNumeros(e, codigo){
     tecla = e.keyCode
-    if((tecla>47 && tecla<58) || (tecla>95 && tecla<106) || teclas == 8){
+    if((tecla>47 && tecla<58) || (tecla>95 && tecla<106) || tecla == 8){
         cad = $('#cant-'+codigo).val()
     }
     $('#cant-'+codigo).val(cad)
@@ -446,18 +500,54 @@ function soloNumerosDinero(e){
     $('#dinero').val(cdn3)
 }
 
-function calcularTotal(){
+function calcularTotal(codProd, param){
+    // Total parcial
+    var precio = parseFloat($('#precio-'+codProd).text())
+    var cantidad = $('#cant-'+codProd).val()
+    if(cantidad.length == 0){
+        cantidad = 1
+        $('#cant-'+codProd).val(cantidad)
+    }
+    var descuento = parseFloat($('#desc-'+codProd).val())
+    if(descuento.length == 0){
+        descuento = 0
+        $('#desc-'+codProd).val(descuento)
+    }
+    var precioFinal = parseFloat($('#final-'+codProd).val())
+
+    if(param == 'f'){
+        descuento = precio*cantidad - precioFinal  
+        descuento = parseFloat(descuento).toFixed(2)
+        $('#desc-'+codProd).val(descuento)
+
+    }else{
+        precioFinal = precio*cantidad - descuento
+        precioFinal = parseFloat(precioFinal).toFixed(2)
+        $('#final-'+codProd).val(precioFinal)
+    }
+
+    if(precioFinal > precio*cantidad){
+        precioFinal = precio*cantidad
+        descuento = 0
+        $('#final-'+codProd).val(precioFinal)
+        $('#desc-'+codProd).val(descuento)
+    }
+
+    // Total de la venta
     var nTotal = 0; 
     for(var i=0; i<prodSeleccionados.length; i++){
         var aux = 0
         var codigo = prodSeleccionados[i]
-        var c = $('#cant-'+codigo).val()
-        var p = parseInt($('#precio-'+codigo).text())
-        aux = c*p
+        //var c = $('#cant-'+codigo).val()
+        //var p = parseFloat($('#precio-'+codigo).text())
+        //aux = c*p
+        aux = parseFloat($('#final-'+codigo).val())
         nTotal = nTotal + aux
     }
+    nTotal = parseFloat(nTotal).toFixed(2)
     $('#cantTotal').val(nTotal)
     $('#cantEfectivo').val(nTotal)
+
 }
 
 function calcularResto(id){
@@ -483,3 +573,43 @@ function calcularVuelto2(){
     var vuelto = parseFloat(dinero - efectivo).toFixed(2)
     $('#vuelto').val(vuelto)
 }
+
+
+// MODAL ANULAR
+function anularDocumentoVenta(numero){
+    $('#numeroDocumento').val(numero)
+    $('#modalAnularDocumentoVenta').modal({
+        keyboard: false,
+        backdrop: 'static'
+    })
+}
+
+// ANULAR 
+$('#btnAnularDocumentoVenta').click(function(){
+    var numeroDoc = $('#numeroDocumento').val()
+    var data = {
+        numeroDoc,
+        _token: $('input[name=_token]').val(),
+    }
+    $.ajax({
+        type: 'delete',
+        url: 'documentos_venta/anular',
+        dataType: 'json',
+        data,
+        success: function(a){
+            if(a.estado){
+                $('#modalAnularDocumentoVenta').modal('hide')
+                location.replace(URI_ACTUALIZAR)
+
+            }else{
+                $('#mensajeAnular').text(a.mensaje)
+                $('#anularDoc').css('display', 'inline')
+                $('#modalAnularDocumentoVenta').modal('hide')
+            }
+        },
+        error: function(e){
+            $('#mensajeAnular').text(e.message)
+            $('#anularDoc').css('display', 'inline')
+        }   
+    })
+})

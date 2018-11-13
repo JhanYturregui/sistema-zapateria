@@ -94,14 +94,27 @@
                     </div>
                     <div class="col-md-3 form-group">
                         <label for="tipoDoc">Tipo Documento</label>
-                        <select class="form-control" id="tipoDoc">
+                        <select class="form-control" id="tipoDoc" onchange="tipoDocAlm()">
                             <option value="ingreso">Ingreso</option>
                             <option value="salida">Salida</option>
                         </select>
                     </div>
+                    <div class="col-md-3 form-group" id="divSucursales">
+                        <label id="tituloSuc" for="sucursales">Origen</label>
+                        <select class="form-control" id="sucursales">
+                            @foreach ($sucursales as $sucursal)
+                                <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>    
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="col-md-3 form-group">
                         <label for="codigoProd">Código producto</label>
                         <input type="text" id="codigoProd" class="form-control" placeholder="Ingrese código" onkeyup="buscarProductos(this.value)">
+                    </div>
+                    <div class="col-md-9 form-group">
+                        <label for="comentario">Comentario</label>
+                        <textarea id="comentario" cols="30" rows="3" class="form-control" placeholder="Comentario"></textarea>
                     </div>
 
                     <div class="col-md-2 form-group"></div>
@@ -144,9 +157,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-12 form-group">
-                        <textarea id="comentario" cols="30" rows="4" class="form-control" placeholder="Comentario"></textarea>
-                    </div>
+                    
 
                     <div class="col-md-12 form-group">
                         <small id="mensaje" class="help-block col-sm-offset-0 col-sm-12 validar-campo-lg">

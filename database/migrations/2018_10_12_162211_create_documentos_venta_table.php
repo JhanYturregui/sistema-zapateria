@@ -20,10 +20,12 @@ class CreateDocumentosVentaTable extends Migration
             $table->string('cliente');
             $table->json('productos');
             $table->json('cantidades');
+            $table->json('descuentos');
             $table->double('monto_total', 7, 2);
             $table->json('modos_pago');
             $table->json('montos');
             $table->string('numero_caja');
+            $table->integer('usuario_anulacion')->nullable();
             $table->boolean('estado');
             $table->timestamps();
         });

@@ -119,49 +119,49 @@ class AccesoController extends Controller
                     $ruta = "roles";
                     break;
                 case 5:
-                    $ruta = "ventas";
-                    break;
-                case 6:
                     $ruta = "personas";
                     break;    
-                case 7:
+                case 6:
                     $ruta = "usuarios";
                     break;    
-                case 8:
+                case 7:
                     $ruta = "colores";
                     break;    
-                case 9:
+                case 8:
                     $ruta = "tallas";
                     break;    
-                case 10:
+                case 9:
                     $ruta = "marcas";
                     break;    
-                case 11:
+                case 10:
                     $ruta = "modelos";
                     break;    
-                case 12:
+                case 11:
                     $ruta = "lineas";
                     break;    
-                case 13:
+                case 12:
                     $ruta = "proveedores";
                     break;    
-                case 14:
+                case 13:
                     $ruta = "productos";
                     break;    
-                case 15:
+                case 14:
                     $ruta = "sucursales";
                     break;    
-                case 16:
+                case 15:
                     $ruta = "conceptos";
                     break;    
-                case 17:
+                case 16:
                     $ruta = "documentos_almacen";
                     break;    
-                case 18:
+                case 17:
                     $ruta = "documentos_venta";
                     break;    
-                case 19:
+                case 18:
                     $ruta = "caja";
+                    break;    
+                case 19:
+                    $ruta = "reportes";
                     break;    
                 
                 default:

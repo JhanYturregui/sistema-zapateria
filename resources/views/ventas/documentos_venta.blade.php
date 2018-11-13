@@ -31,6 +31,9 @@
                             <th>Caja</th>
                             <th>Fecha</th>
                             <th>Monto</th>
+                            @if (Auth::user()->tipo == 1)
+                                <th>Anular</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +43,9 @@
                                 <td>{{ $venta->numero_caja }}</td>
                                 <td>{{ $venta->created_at }}</td>
                                 <td>{{ $venta->monto_total }}</td>
+                                @if (Auth::user()->tipo == 1)
+                                    <td><i class="fas fa-trash" title="Anular" onclick="anularDocumentoVenta('{{$venta->numero}}')"></i></td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -89,7 +95,7 @@
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="codigoProd">Código producto</label>
-                        <input type="text" id="codigoProd" class="form-control" placeholder="Ingrese código" onkeyup="buscarProductos(this.value)">
+                        <input type="text" id="codigoProd" class="form-control" placeholder="Ingrese código" onkeyup="buscarProductos(this.value)" onkeypress="agregarProd(event, this.value)">
                     </div>
 
                     <div class="col-md-4 form-group">
@@ -124,7 +130,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr class="titulo">
-                                    <th colspan="9">PRODUCTOS SELECCIONADOS</th>
+                                    <th colspan="11">PRODUCTOS SELECCIONADOS</th>
                                 </tr>
                                 <tr>
                                     <th>Código</th>
@@ -135,6 +141,8 @@
                                     <th>Línea</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
+                                    <th>Dsct</th>
+                                    <th>Precio Final</th>
                                     <th>Eliminar</th>
                                 </tr>
                             </thead>
@@ -190,7 +198,7 @@
 </div>
 
 <!-- MODAL ANULAR DOCUMENTO -->
-<div class="modal fade" id="modalAnularDocumento" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade" id="modalAnularDocumentoVenta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -204,12 +212,12 @@
             </div>
 
             <div class="modal-body">
-                ¿Está seguro que desea anular este documento de almacén?
+                ¿Está seguro que desea anular este documento de venta?
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnAnularDocumento">Anular</button>
+                <button type="button" class="btn btn-danger" id="btnAnularDocumentoVenta">Anular</button>
             </div>
         </div>
     </div>

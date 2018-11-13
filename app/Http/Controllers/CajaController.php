@@ -20,6 +20,7 @@ class CajaController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -31,20 +32,21 @@ class CajaController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
-
-        //$cajas = Caja::where('estado', false)->orderBy('id', 'desc')->paginate(10);
         
         $sucursal = Auth::user()->sucursal;
-        $caja = Caja::orderBy('id', 'desc')->first();
+        $cajaSuc = '00'.$sucursal.' -';
+        $contador = Caja::where('numero', 'like', $cajaSuc.'%')->orderBy('id', 'desc')->count();
         
-        if($caja == null){
+        if($contador == 0){
             $aperturado = false;
             $numeroCaja = "00".$sucursal." - 1";
             $montoCierre = 0;
 
         }else{
-            $cajaAbierta = Caja::where('estado', true)->orderBy('id', 'desc')->first();
+            $cajaAbierta = Caja::where([['estado', true], ['numero', 'like', $cajaSuc.'%']])->orderBy('id', 'desc')->first();
+
             if($cajaAbierta == null){
+                $caja = Caja::orderBy('created_at', 'desc')->first();
                 $aux = explode("-", $caja->numero);
                 $aux2 = $aux[1] + 1;
                 $numeroCaja = "00".$sucursal." - ".$aux2;
@@ -54,14 +56,14 @@ class CajaController extends Controller
             }else{
                 $numeroCaja = $cajaAbierta->numero;
                 $aperturado = true;
-                $montoCierre = 0;
+                $montoCierre = $cajaAbierta->monto_apertura;
 
-                $ventas = DocumentoVenta::where('numero_caja', $numeroCaja)->get(); 
+                $ventas = DocumentoVenta::where([['numero_caja', $numeroCaja], ['estado', true]])->get(); 
                 foreach ($ventas as $key => $value) {
                     $montoCierre = $montoCierre + $value->monto_total;
                 }
 
-                $movimientos = MovimientoCaja::where('numero_caja', $numeroCaja)->get();
+                $movimientos = MovimientoCaja::where([['numero_caja', $numeroCaja], ['estado', true]])->get();
                 foreach ($movimientos as $key => $value) {
                     $tipo = $value->tipo;
                     if($tipo == 'ingreso'){
@@ -72,10 +74,10 @@ class CajaController extends Controller
                 }
             }
         }
-
+        
         $movimientos = MovimientoCaja::where([['numero_caja', $numeroCaja], ['estado', true]])->paginate(10);
 
-        $movimientoCaja = MovimientoCaja::orderBy('id', 'desc')->first();
+        $movimientoCaja = MovimientoCaja::where('numero_caja', $numeroCaja)->orderBy('id', 'desc')->first();
         if($movimientoCaja == null){
             $numeroMovimiento = "00".$sucursal." - 1";
 
@@ -101,7 +103,6 @@ class CajaController extends Controller
      */
     public function aperturarCaja(Request $request)
     {
-        date_default_timezone_set('America/Lima');
         $numeroCaja = $request->get('numeroCaja');
         $montoApertura = $request->get('montoApertura');
 
@@ -110,6 +111,7 @@ class CajaController extends Controller
         $caja = new Caja();
         $caja->numero = $numeroCaja;
         $caja->monto_apertura = $montoApertura;
+        $caja->usuario_apertura = Auth::user()->id;
         $caja->estado = true;
         $caja->save();
 
@@ -126,7 +128,6 @@ class CajaController extends Controller
      */
     public function cerrarCaja(Request $request)
     {
-        date_default_timezone_set('America/Lima');
         $numeroCaja = $request->get('numeroCaja');
         $montoCierre = $request->get('montoCierre');
         $montoReal = $request->get('montoReal');
@@ -138,6 +139,7 @@ class CajaController extends Controller
         $caja->monto_cierre = $montoCierre;
         $caja->monto_real = $montoReal;
         $caja->comentario = $comentario;
+        $caja->usuario_cierre = Auth::user()->id;
         $caja->estado = false;
         $caja->save();
 
@@ -167,7 +169,6 @@ class CajaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function generarMovimiento(Request $request){
-        date_default_timezone_set('America/Lima');
         $numero = $request->get('numero');
         $tipo = $request->get('tipo');
         $concepto = $request->get('concepto');
@@ -175,8 +176,18 @@ class CajaController extends Controller
         $monto = $request->get('monto');
         $comentario = $request->get('comentario');
         
-        $caja = Caja::where('estado', true)->first();
+        $sucursal = Auth::user()->sucursal;
+        $cajaSuc = '00'.$sucursal.' -';
+        $caja = Caja::where([['numero', 'like', $cajaSuc.'%'], ['estado', true]])->orderBy('id', 'desc')->first();
         $numeroCaja = $caja->numero;
+
+        $existeMov = MovimientoCaja::where([['numero', $numero], ['numero_caja', $numeroCaja]])->exists();
+        if($existeMov){
+            $mov = MovimientoCaja::where('numero', 'like', $cajaSuc.' -')->orderBy('id', 'desc')->first();
+            $aux = explode(" - ", $mov->numero);
+            $aux2 = $aux[1] + 1;
+            $numero = '00'.$sucursal.' - '.$aux2;
+        }
 
         $movimiento = new MovimientoCaja();
         $movimiento->numero = $numero;
@@ -184,6 +195,7 @@ class CajaController extends Controller
         $movimiento->concepto = $concepto;
         $movimiento->doc_persona = $persona;
         $movimiento->monto = $monto;
+        $movimiento->usuario = Auth::user()->id;
         $movimiento->comentario = $comentario;
         $movimiento->numero_caja = $numeroCaja;
         $movimiento->estado = true;
@@ -192,6 +204,20 @@ class CajaController extends Controller
         $response = array();
         $response["estado"] = true;
         
+        return json_encode($response);
+    }
+
+    /**
+     * 
+     */
+    public function anularMovimiento(Request $request){
+        $numeroMovimiento = $request->get('numeroMov');
+        $movimiento = MovimientoCaja::where('numero', $numeroMovimiento)->first();
+        $movimiento->estado = false;
+        $movimiento->save();
+
+        $response = array();
+        $response["estado"] = true;
         return json_encode($response);
     }
 

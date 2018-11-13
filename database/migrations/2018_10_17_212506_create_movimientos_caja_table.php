@@ -20,8 +20,10 @@ class CreateMovimientosCajaTable extends Migration
             $table->integer('concepto');
             $table->string('doc_persona');
             $table->double('monto', 8, 2);
+            $table->integer('usuario');
             $table->string('comentario')->nullable();
             $table->string('numero_caja');
+            $table->integer('usuario_anulacion')->nullable();
             $table->boolean('estado');
             $table->timestamps();
         });

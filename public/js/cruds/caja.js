@@ -1,4 +1,4 @@
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname
@@ -21,25 +21,33 @@ $('#btnAperturarCaja').click(function(){
     var numeroCaja = $('#numeroCaja').val()
     var montoApertura = $('#montoApertura').val()
 
-    var data = {
-        numeroCaja,
-        montoApertura,
-        _token: $('input[name=_token]').val()
-    }
-    $.ajax({
-        type: 'post',
-        url: 'caja/aperturar',
-        dataType: 'json',
-        data,
-        success: function(a){
-            if(a){
-                location.replace(URI_CREAR)
-            }
-        },
-        error: function(e){
-            console.log(e)
+    if(montoApertura.length == 0){
+        $('#campoMontoApertura').text('Campo obligatorio')
+        $('#campoMontoApertura').css('display', 'inline')
+        $('#montoApertura').focus()
+
+    }else{
+        $('#campoMontoApertura').css('display', 'none')
+        var data = {
+            numeroCaja,
+            montoApertura,
+            _token: $('input[name=_token]').val()
         }
-    })
+        $.ajax({
+            type: 'post',
+            url: 'caja/aperturar',
+            dataType: 'json',
+            data,
+            success: function(a){
+                if(a){
+                    location.replace(URI_CREAR)
+                }
+            },
+            error: function(e){
+                console.log(e)
+            }
+        })
+    }
 
 })
 
@@ -172,6 +180,38 @@ $('#btnRegistrarMovimiento').click(function(){
         
     }
 
+})
+
+// MODAL ANULAR
+function anularMovimiento(numero){
+    $('#numeroMovimiento').val(numero)
+    $('#modalAnularMovimiento').modal({
+        keyboard: false,
+        backdrop: 'static'
+    })
+}
+
+// ANULAR MOVIMIENTO
+$('#btnAnularMovimiento').click(function(){
+    var numeroMov = $('#numeroMovimiento').val()
+    var data = {
+        numeroMov,
+        _token: $('input[name=_token]').val()
+    }
+    $.ajax({
+        type: 'post',
+        url: '/caja/anular_movimiento',
+        dataType: 'json',
+        data,
+        success: function(a){
+            if(a.estado){
+                location.replace(URI_CREAR)
+            }
+        },
+        error: function(e){
+
+        }
+    })
 })
 
 var cadEnteros = ''

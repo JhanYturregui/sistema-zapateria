@@ -17,10 +17,13 @@ class CreateDocumentosAlmacenTable extends Migration
             $table->increments('id');
             $table->string('numero');
             $table->string('tipo');
+            $table->string('origen')->nullable();
+            $table->string('destino')->nullable();
             $table->integer('usuario');
             $table->json('productos');
             $table->json('cantidades');
             $table->string('comentario')->nullable();
+            $table->integer('usuario_anulacion')->nullable();
             $table->boolean('estado');
             $table->timestamps();
         });

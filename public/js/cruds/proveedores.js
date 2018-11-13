@@ -1,5 +1,4 @@
-//APP_URI = "http://localhost:8000"
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 APP_URI = origin+pathname
 /************ PROVEEDORES **************/

@@ -21,6 +21,7 @@ class DocumentoVentaController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -34,31 +35,34 @@ class DocumentoVentaController extends Controller
         $datos = $accesoController->obtenerMenus();
 
         $sucursal = Auth::user()->sucursal;
-        $documentos = DocumentoVenta::where('estado', true)->orderBy('created_at', 'desc')->paginate(10);
-        $numeroDoc = DB::table('documentos_venta')
-                     ->select('numero')
-                     ->orderBy('created_at', 'desc')->first();
+        $cajaSuc = '00'.$sucursal.' -';
+        $caja = Caja::where([['estado', true], ['numero', 'like', $cajaSuc.'%']])->orderBy('id', 'desc')->first();
         
-        if($numeroDoc === null){
-            $numeroDoc = "00".$sucursal." - 1";
-
-        }else{
-            $aux = explode("-", $numeroDoc->numero);
-            $aux2 = $aux[1] + 1;
-            $numeroDoc = "00".$sucursal." - ".$aux2;
-        }
-
-        $caja = Caja::where('estado', true)->first();
         if($caja == null){
             $aperturado = false;
-            $ventas = [];
+            $ventas = DocumentoVenta::where('numero_caja', 'x')->orderBy('id', 'desc')->paginate(10);
+            $numeroDoc = '';
+
         }else{
             $aperturado = true;
-            $ventas = DocumentoVenta::where('numero_caja', $caja->numero)->orderBy('id', 'desc')->paginate(10);
+            $ventas = DocumentoVenta::where([['numero_caja', $caja->numero], ['estado', true]])->orderBy('id', 'desc')->paginate(10);
+
+            $numeroDoc = DB::table('documentos_venta')
+                        ->select('numero')
+                        ->where('numero_caja', 'like', $cajaSuc.'%')
+                        ->orderBy('created_at', 'desc')->first();
+                    
+            if($numeroDoc == null){
+                $numeroDoc = "00".$sucursal." - 1";
+
+            }else{
+                $aux = explode("-", $numeroDoc->numero);
+                $aux2 = $aux[1] + 1;
+                $numeroDoc = "00".$sucursal." - ".$aux2;
+            }
         }
 
-        return view('ventas.documentos_venta', ['documentos'=> $documentos, 
-                                                'numeroDoc' => $numeroDoc,
+        return view('ventas.documentos_venta', ['numeroDoc' => $numeroDoc,
                                                 'datos'     => $datos,
                                                 'aperturado'=> $aperturado,
                                                 'ventas'    => $ventas]); 
@@ -73,7 +77,8 @@ class DocumentoVentaController extends Controller
     public function store(Request $request)
     {
         $sucursal = Auth::user()->sucursal;
-        $caja = Caja::where('estado', true)->first();
+        $cajaSuc = '00'.$sucursal.' -';
+        $caja = Caja::where([['numero', 'like', $cajaSuc.'%'], ['estado', true]])->orderBy('id', 'desc')->first();
         $numeroCaja = $caja->numero;
         $numeroDoc = $request->get('numeroDoc');
         $docPersona = $request->get('docPersona');
@@ -97,7 +102,6 @@ class DocumentoVentaController extends Controller
             $persona->roles = $roles;
             $persona->save();
         }
-        
         
         $jsonMetodosPago = [];
         foreach($metodosPago as $key => $value){
@@ -128,11 +132,14 @@ class DocumentoVentaController extends Controller
 
         $arrCodigos = [];
         $arrCantidades = [];
+        $arrDescuentos = [];
         foreach($productos as $key => $value){
             $codigo = $value["codigo"];
             $cantidad = $value["cantidad"];
+            $descuento = $value["descuento"];
             array_push($arrCodigos, $codigo);
             array_push($arrCantidades, $cantidad);
+            array_push($arrDescuentos, $descuento);
 
             $inventario = Inventario::where([['codigo_producto', $codigo], ['sucursal', $sucursal]])->first();
             $cantInv = $inventario->cantidad;
@@ -143,6 +150,16 @@ class DocumentoVentaController extends Controller
         }
         $jsonCodigos = json_encode($arrCodigos);
         $jsonCantidades = json_encode($arrCantidades);
+        $jsonDescuentos = json_encode($arrDescuentos);
+
+        $existeDoc = DocumentoVenta::where('numero', $numeroDoc)->exists();
+        if($existeDoc){
+            $doc = DocumentoVenta::where('numero_caja', $numeroCaja)->orderBy('id', 'desc')->first();
+            $aux = $doc->numero;
+            $aux = explode(" - ", $aux);
+            $aux2 = $aux[1] + 1;
+            $numeroDoc = $aux[0]." - ".$aux2;
+        }
 
         $venta = new DocumentoVenta();
         $venta->numero = $numeroDoc;
@@ -150,6 +167,7 @@ class DocumentoVentaController extends Controller
         $venta->cliente = $docPersona;
         $venta->productos = $jsonCodigos;
         $venta->cantidades = $jsonCantidades;
+        $venta->descuentos = $jsonDescuentos;
         $venta->monto_total = $cantTotal;
         $venta->modos_pago = $jsonMetodosPago;
         $venta->montos = $jsonMontosPago;
@@ -164,47 +182,37 @@ class DocumentoVentaController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Anular un documento de venta.
      *
-     * @param  int  $id
+     * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function anularDocumento(Request $request)
     {
-        //
-    }
+        $numeroDoc = $request->get('numeroDoc');
+        $docVenta = DocumentoVenta::where('numero', $numeroDoc)->first();
+        $productos = $docVenta->productos;
+        $productos = json_decode($productos);
+        $cantidades = $docVenta->cantidades;
+        $cantidades = json_decode($cantidades);
+        
+        for($i=0; $i<count($productos); $i++){
+            $codProd = $productos[$i];
+            $cantidad = $cantidades[$i];
+            $inventario = Inventario::where('codigo_producto', $codProd)->first();
+            $cantActual = $inventario->cantidad;
+            $nuevaCantidad = $cantActual + $cantidad;
+            $inventario->cantidad = $nuevaCantidad;
+            $inventario->save();    
+        }
+        
+        $docVenta->usuario_anulacion = Auth::user()->id;
+        $docVenta->estado = false;
+        $docVenta->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        $response = array();
+        $response["estado"] = true;
+        return json_encode($response);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

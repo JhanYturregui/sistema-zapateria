@@ -73,6 +73,7 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
+        $codigo = $request->get('codigo');
         $descripcion = $request->get('descripcion');
         $marca = $request->get('marca');
         $modelo = $request->get('modelo');
@@ -83,71 +84,77 @@ class ProductoController extends Controller
         $precioVenta = $request->get('precioVenta');
      
         $response = array();
-        $codigo = $this->generarCodigo(8);
+        //$codigo = $this->generarCodigo(8);
         $existeCodigo = Producto::where('codigo', $codigo)->first();
         
         while ($existeCodigo) {
             $codigo = $this->generarCodigo(8);
         }
 
-        $existeProducto = Producto::where([['marca', $marca],
-                                           ['modelo', $modelo],
-                                           ['color', $color],
-                                           ['talla', $talla],
-                                           ['linea', $linea]])->exists();
-
-        if($existeProducto){
-            $productoActivo = Producto::where([['marca', $marca],
-                                               ['modelo', $modelo],
-                                               ['color', $color],
-                                               ['talla', $talla],
-                                               ['linea', $linea],
-                                               ['estado', true]])->exists();
-            if($productoActivo){
-                $response["estado"] = false;
-                $response["mensaje"] = "El producto ya se encuentra registrado";
-
-            }else{
-                $producto = Producto::where([['marca', $marca],
-                                             ['modelo', $modelo],
-                                             ['color', $color],
-                                             ['talla', $talla],
-                                             ['linea', $linea]])->first();
-                $producto->estado = true;
-                $response["estado"] = true;
-                $response["mensaje"] = "";                                             
-            }                                                                 
+        $existeCodigo = Producto::where('codigo', $codigo)->exists();
+        if($existeCodigo){
+            $response["estado"] = false;
+            $response["mensaje"] = "Este código ya se encuentra registrado";
 
         }else{
-            /** Tabla PRODUCTOS */
-            $producto = new Producto();
-            $producto->codigo = $codigo;
-            $producto->descripcion = $descripcion;
-            $producto->marca = $marca;
-            $producto->modelo = $modelo;
-            $producto->color = $color;
-            $producto->talla = $talla;
-            $producto->linea = $linea;
-            $producto->precio_compra = $precioCompra;
-            $producto->precio_venta = $precioVenta;
-            $producto->estado = true;
-            $producto->save();
+            $existeProducto = Producto::where([['marca', $marca],
+                                            ['modelo', $modelo],
+                                            ['color', $color],
+                                            ['talla', $talla],
+                                            ['linea', $linea]])->exists();
 
-            $response["estado"] = true;
-            $response["mensaje"] = "";
+            if($existeProducto){
+                $productoActivo = Producto::where([['marca', $marca],
+                                                ['modelo', $modelo],
+                                                ['color', $color],
+                                                ['talla', $talla],
+                                                ['linea', $linea],
+                                                ['estado', true]])->exists();
+                if($productoActivo){
+                    $response["estado"] = false;
+                    $response["mensaje"] = "El producto ya se encuentra registrado";
 
-            // Tabla INVENTARIO 
-            $inventario = new Inventario();
-            $inventario->codigo_producto = $codigo;
-            $inventario->sucursal = Auth::user()->sucursal;
-            $inventario->cantidad= 0;
-            $inventario->estado = true;
-            $inventario->save();
-            
-            $response["estado"] = true;
-            $response["mensaje"] = "";
+                }else{
+                    $producto = Producto::where([['marca', $marca],
+                                                ['modelo', $modelo],
+                                                ['color', $color],
+                                                ['talla', $talla],
+                                                ['linea', $linea]])->first();
+                    $producto->estado = true;
+                    $response["estado"] = true;
+                    $response["mensaje"] = "";                                             
+                }                                                                 
+
+            }else{
+                /** Tabla PRODUCTOS */
+                $producto = new Producto();
+                $producto->codigo = $codigo;
+                $producto->descripcion = $descripcion;
+                $producto->marca = $marca;
+                $producto->modelo = $modelo;
+                $producto->color = $color;
+                $producto->talla = $talla;
+                $producto->linea = $linea;
+                $producto->precio_compra = $precioCompra;
+                $producto->precio_venta = $precioVenta;
+                $producto->estado = true;
+                $producto->save();
+
+                $response["estado"] = true;
+                $response["mensaje"] = "";
+
+                // Tabla INVENTARIO 
+                $inventario = new Inventario();
+                $inventario->codigo_producto = $codigo;
+                $inventario->sucursal = Auth::user()->sucursal;
+                $inventario->cantidad= 0;
+                $inventario->estado = true;
+                $inventario->save();
+                
+                $response["estado"] = true;
+                $response["mensaje"] = "";
+            }
         }
-
         return json_encode($response);
     }
 
@@ -186,45 +193,45 @@ class ProductoController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
+        $codigo = $request->get('codigo');
         $descripcion = $request->get('descripcion');
         $marca = $request->get('marca');
         $modelo = $request->get('modelo');
         $color = $request->get('color');
         $talla = $request->get('talla');
         $linea = $request->get('linea');
+        $precioCompra = $request->get('precioCompra');
+        $precioVenta = $request->get('precioVenta');
      
         $response = array();
 
-        $existeProducto = Producto::where([['marca', $marca],
-                                           ['modelo', $modelo],
-                                           ['color', $color],
-                                           ['talla', $talla],
-                                           ['linea', $linea],
-                                           ['id', $id]])->exists();
-
-        if($existeProducto){
+        $existeCodigo = Producto::where('codigo', $codigo)->exists();
+        if($existeCodigo){
             $response["estado"] = false;
-            $response["mensaje"] = "Los datos del producto son los mismos";                                                                                                              
+            $response["mensaje"] = "Este código ya se encuentra registrado";
 
         }else{
             $existeProducto2 = Producto::where([['marca', $marca],
-                                           ['modelo', $modelo],
-                                           ['color', $color],
-                                           ['talla', $talla],
-                                           ['linea', $linea]])->exists();
+                                        ['modelo', $modelo],
+                                        ['color', $color],
+                                        ['talla', $talla],
+                                        ['linea', $linea]])->exists();
 
             if($existeProducto2){
                 $response["estado"] = false;
                 $response["mensaje"] = "El producto ya se encuentra registrado";  
 
             }else{
-                $producto = Producto::where('id', $id)->first();
+                $producto = Producto::where('codigo', $codigo)->first();
+                $producto->codigo = $codigo;
                 $producto->descripcion = $descripcion;
                 $producto->marca = $marca;
                 $producto->modelo = $modelo;
                 $producto->color = $color;
                 $producto->talla = $talla;
                 $producto->linea = $linea;
+                $producto->precio_compra = $precioCompra;
+                $producto->precio_venta = $precioVenta;
                 $producto->save();
                 
                 $response["estado"] = true;

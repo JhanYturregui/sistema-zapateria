@@ -35,7 +35,7 @@
                             <tr>
                                 <td>{{ $usuario->num_documento }}</td>
                                 <td>{{ $usuario->username }}</td>
-                                <td>{{ $usuario->tipo }}</td>
+                                <td>{{ $usuario->tipo_usuario }}</td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarUsuario({{$usuario->id}})"></i></td>
                                 <td><i class="fas fa-trash" title="Eliminar" onclick="eliminarUsuario({{$usuario->id}})"></i></td>
                             </tr>
@@ -82,6 +82,13 @@
                             @endforeach
                         </select>
                     </div> 
+                    <div class="form-group">
+                        <select class="form-control" id="sucursal">
+                            @foreach ($sucursales as $sucursal)
+                                <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
                 </form>    
             </div>
 
@@ -120,6 +127,13 @@
                         <select class="form-control" id="tipoUsuarioA">
                             @foreach ($tiposUsuario as $tipo)
                                 <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="sucursalA">
+                            @foreach ($sucursales as $sucursal)
+                                <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>
                             @endforeach
                         </select>
                     </div>

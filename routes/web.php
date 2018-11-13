@@ -411,9 +411,9 @@ Route::post('/documentos_venta/crear', [
     'uses' => 'DocumentoVentaController@store',
     'as'   => 'crear_documento_venta'
 ]);
-Route::delete('/documentos_venta/eliminar', [
-    'uses' => 'DocumentoVentaController@destroy',
-    'as'   => 'eliminar_documento_venta'
+Route::delete('/documentos_venta/anular', [
+    'uses' => 'DocumentoVentaController@anularDocumento',
+    'as'   => 'anular_documento_venta'
 ]);
 
 /****** Rutas CAJA *****/
@@ -436,4 +436,18 @@ Route::post('/caja/conceptos', [
 Route::post('/caja/generar_movimiento', [
     'uses' => 'CajaController@generarMovimiento',
     'as'   => 'movimiento_caja'
+]);
+Route::post('/caja/anular_movimiento', [
+    'uses' => 'CajaController@anularMovimiento',
+    'as'   => 'anular_movimiento'
+]);
+
+/****** Rutas REPORTES *****/
+Route::get('/reportes', [
+    'uses' => 'ReporteController@index',
+    'as'   => 'reportes'
+]);
+Route::post('/reportes/detalles', [
+    'uses' => 'ReporteController@detallesReporte',
+    'as'   => 'detalles_reporte'
 ]);

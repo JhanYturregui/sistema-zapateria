@@ -1,4 +1,4 @@
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname

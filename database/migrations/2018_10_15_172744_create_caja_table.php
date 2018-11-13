@@ -20,6 +20,8 @@ class CreateCajaTable extends Migration
             $table->double('monto_cierre', 8, 2)->nullable();
             $table->double('monto_real', 8, 2)->nullable();
             $table->string('comentario')->nullable();
+            $table->integer('usuario_apertura');
+            $table->integer('usuario_cierre')->nullable();
             $table->boolean('estado');
             $table->timestamps();
         });

@@ -1,4 +1,4 @@
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname
@@ -47,6 +47,7 @@ $('#btnRegistrarDocumentoAlmacen').click(function(){
         var numeroDoc = $('#numeroDoc').val()
         var fechaDoc = $('#fechaDoc').val()
         var tipoDoc = $('#tipoDoc').val()
+        var sucursal = $('#sucursales').val()
         var comentario = $('#comentario').val()
 
         var data = {
@@ -54,6 +55,7 @@ $('#btnRegistrarDocumentoAlmacen').click(function(){
             tipoDoc,
             comentario,
             productos,
+            sucursal,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
@@ -239,8 +241,8 @@ function soloNumeros(e, codigo){
     $('#cant-'+codigo).val(cad)
 }
 
-// MODAL ELIMINAR
-function anularDocumentoAlmacen(numero){
+// MODAL ANULAR
+function anularMovimiento(numero){
     $('#numeroDocumento').val(numero)
     $('#modalAnularDocumento').modal({
         keyboard: false,
@@ -248,7 +250,7 @@ function anularDocumentoAlmacen(numero){
     })
 }
 
-// ELIMINAR 
+// ANULAR 
 $('#btnAnularDocumento').click(function(){
     var numeroDoc = $('#numeroDocumento').val()
     var data = {
@@ -277,3 +279,12 @@ $('#btnAnularDocumento').click(function(){
         }   
     })
 })
+
+function tipoDocAlm(){
+    var tipo = $('#tipoDoc').val()
+    if(tipo == 'ingreso'){
+        $('#tituloSuc').text('Origen')
+    }else{
+        $('#tituloSuc').text('Destino')
+    }
+}

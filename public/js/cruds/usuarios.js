@@ -1,4 +1,4 @@
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
 URI_ACTUALIZAR = origin+pathname
@@ -19,6 +19,7 @@ $('#btnCrearUsuario').click(function(){
     var numeroDocumento = $('#numeroDoc').val()
     var usuario = $('#usuario').val()
     var tipoUsuario = $('#tipoUsuario').val()
+    var sucursal = $('#sucursal').val()
     
     if(numeroDocumento == ""){
         $('#campoNumeroDoc').text('Campo obligatorio')
@@ -35,6 +36,7 @@ $('#btnCrearUsuario').click(function(){
             numeroDocumento,
             usuario,
             tipoUsuario,
+            sucursal,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
@@ -78,10 +80,12 @@ function editarUsuario(id){
             numeroDoc = data.num_documento
             usuario = data.username
             tipoUsuario = data.tipo
+            sucursal = data.sucursal
 
             $('#numeroDocA').val(numeroDoc)
             $('#usuarioA').val(usuario)
             $('#tipoUsuarioA').val(tipoUsuario)
+            $('#sucursalA').val(sucursal)
 
             $('#modalEditarUsuario').modal({
                 keyboard: false,
@@ -97,6 +101,7 @@ $('#btnActualizarUsuario').click(function(){
     var numeroDocumento = $('#numeroDocA').val()
     var usuario = $('#usuarioA').val()
     var tipoUsuario = $('#tipoUsuarioA').val()
+    var sucursal = $('#sucursalA').val()
 
     if(usuario == ""){
         $('#campoUsuarioA').text('Campo obligatorio')
@@ -109,6 +114,7 @@ $('#btnActualizarUsuario').click(function(){
             numeroDocumento,
             usuario,
             tipoUsuario,
+            sucursal,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({

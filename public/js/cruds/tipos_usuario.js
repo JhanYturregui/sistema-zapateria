@@ -1,4 +1,8 @@
-APP_URI = "http://localhost:8000"
+var origin = localStorage.getItem('url')
+var pathname = window.location.pathname
+
+URI_ACTUALIZAR = origin+pathname
+URI_CREAR = origin+'/tipos_usuario'
 /************ TIPOS USUARIO **************/
 // MODAL CREAR
 function crearTipoUsuario(){
@@ -31,7 +35,7 @@ $('#btnCrearTipoUsuario').click(function(){
                 res = a.responseJSON
                 if(res.estado){
                     $('#modalCrearTipoUsuario').modal('hide')
-                    location.replace(APP_URI+'/tipos_usuario')
+                    location.replace(URI_CREAR)
 
                 }else{
                     $('#campoNombre').text(res.mensaje)
@@ -90,7 +94,7 @@ $('#btnActualizarTipoUsuario').click(function(){
             data,
             complete: function(a){
                 $('#modalEditarTipoUsuario').modal('hide')
-                location.replace(APP_URI+'/tipos_usuario')
+                location.replace(URI_ACTUALIZAR)
             }   
         })
     }
@@ -119,7 +123,7 @@ $('#btnEliminarTipoUsuario').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarTipoUsuario').modal('hide')
-            location.replace(APP_URI+'/tipos_usuario')
+            location.replace(URI_CREAR)
         }   
     })
 })
@@ -180,7 +184,7 @@ $('#btnAccesos').click(function(){
         complete: function(a){
             //console.log(a)
             $('#modalAccesos').modal('hide')
-            location.replace(APP_URI+'/tipos_usuario')
+            location.replace(URI_ACTUALIZAR)
         }   
     })
 

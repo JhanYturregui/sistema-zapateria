@@ -1,5 +1,4 @@
-//APP_URI = "http://localhost:8000"
-var origin = window.location.origin
+var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 APP_URI = origin+pathname
 /************ PROVEEDORES **************/
@@ -13,6 +12,7 @@ function crearProducto(){
 
 // CREAR 
 $('#btnCrearProducto').click(function(){
+    var codigo = $('#codigo').val()
     var descripcion = $('#descripcion').val()
     var marca = $('#marca').val()
     var modelo = $('#modelo').val()
@@ -36,6 +36,7 @@ $('#btnCrearProducto').click(function(){
 
     }else{
         var data = {
+            codigo,
             descripcion,
             marca,
             modelo,
@@ -60,6 +61,10 @@ $('#btnCrearProducto').click(function(){
                     $('#error').text(res.mensaje)
                     $('#error').css('display', 'inline')
                 }
+            },
+            error: function(e){
+                $('#error').text(e.message)
+                $('#error').css('display', 'inline')
             }   
         })
     }
@@ -77,19 +82,25 @@ function editarProducto(id){
         },
         complete: function(res){
             var data = res.responseJSON
+            var codigo = data.codigo
             var descripcion = data.descripcion
             var marca = data.marca
             var modelo = data.modelo
             var color = data.color
             var talla = data.talla
             var linea = data.linea
+            var precioCompra = data.precio_compra
+            var precioVenta = data.precio_venta
 
+            $('#codigoA').val(codigo)
             $('#descripcionA').val(descripcion)
             $('#marcaA').val(marca)
             $('#modeloA').val(modelo)
             $('#colorA').val(color)
             $('#tallaA').val(talla)
             $('#lineaA').val(linea)
+            $('#precioCompraA').val(precioCompra)
+            $('#precioVentaA').val(precioVenta)
             $('#idProductoA').val(id)
 
             $('#modalEditarProducto').modal({
@@ -103,21 +114,27 @@ function editarProducto(id){
 // ACTUALIZAR 
 $('#btnActualizarProducto').click(function(){
     var id = $('#idProductoA').val()
+    var codigo = $('#codigoA').val()
     var descripcion = $('#descripcionA').val()
     var marca = $('#marcaA').val()
     var modelo = $('#modeloA').val()
     var color = $('#colorA').val()
     var talla = $('#tallaA').val()
     var linea = $('#lineaA').val()
+    var precioCompra = $('#precioCompraA').val()
+    var precioVenta = $('#precioVentaA').val()
 
     var data = {
         id,
+        codigo,
         descripcion,
         marca,
         modelo,
         color,
         talla,
         linea,
+        precioCompra,
+        precioVenta,
         _token: $('input[name=_token]').val(),
     }
     $.ajax({

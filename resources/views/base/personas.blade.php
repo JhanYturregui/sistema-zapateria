@@ -71,41 +71,51 @@
 
             <div class="modal-body">
                 <form>
-                    <div class="form-group">
-                        <select class="form-control" id="tipoDocumento" onchange="segunTipo()">
-                            <option value="DNI">DNI</option>
-                            <option value="RUC">RUC</option>
-                        </select>
-                    </div>    
-                    <div class="form-group">
-                        <input type="text" id="numeroDocumento" class="form-control" placeholder="Número de documento">
-                        <small id="campoNumeroDoc" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="nombresPersona" class="form-control" placeholder="Nombres">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="apellidosPersona" class="form-control" placeholder="Apellidos">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="razonSocial" class="form-control" placeholder="Razón Social" readonly>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="correoPersona" class="form-control" placeholder="Correo">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="telefonoPersona" class="form-control" placeholder="Teléfono">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="direccionPersona" class="form-control" placeholder="Dirección">
-                    </div>
-                    <div class="form-group">
-                        @foreach ($roles as $rol)
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="tipoDocumento">Tipo Doc</label>
+                            <select class="form-control" id="tipoDocumento" onchange="segunTipo()">
+                                <option value="DNI">DNI</option>
+                                <option value="RUC">RUC</option>
+                            </select>
+                        </div>    
+                        <div class="form-group col-md-4">
+                            <label for="numeroDocumento">Numero Doc</label>
+                            <input type="text" id="numeroDocumento" class="form-control" placeholder="Número de documento">
+                            <small id="campoNumeroDoc" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="razonSocial">Razón social</label>
+                            <input type="text" id="razonSocial" class="form-control" placeholder="Razón Social" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nombresPersona">Nombres</label>
+                            <input type="text" id="nombresPersona" class="form-control" placeholder="Nombres">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="apellidosPersona">Apellidos</label>
+                            <input type="text" id="apellidosPersona" class="form-control" placeholder="Apellidos">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="correoPersona">Correo</label>
+                            <input type="text" id="correoPersona" class="form-control" placeholder="Correo">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="direccionPersona">Dirección</label>
+                            <input type="text" id="direccionPersona" class="form-control" placeholder="Dirección">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="telfonoPersona">Teléfono</label>
+                            <input type="text" id="telefonoPersona" class="form-control" placeholder="Teléfono">
+                        </div>
+                        <div class="form-group col-md-12">
+                            @foreach ($roles as $rol)
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="checkbox" id="rol-{{$rol->id}}" class="custom-control-input roles" value="{{$rol->id}}">
                                 <label class="custom-control-label" for="rol-{{$rol->id}}">{{$rol->nombre}}</label>
                             </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </form>    
             </div>
@@ -134,43 +144,53 @@
 
             <div class="modal-body">
                 <form>
-                    <div class="form-group">
-                        <select class="form-control" id="tipoDocumentoA" onchange="segunTipoAct()">
-                            <option value="DNI">DNI</option>
-                            <option value="RUC">RUC</option>
-                        </select>
-                    </div>    
-                    <div class="form-group">
-                        <input type="text" id="numeroDocumentoA" class="form-control" placeholder="Número de documento">
-                        <small id="campoNumeroDocA" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="nombresPersonaA" class="form-control" placeholder="Nombres">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="apellidosPersonaA" class="form-control" placeholder="Apellidos">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="razonSocialA" class="form-control" placeholder="Razón Social" readonly>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="correoPersonaA" class="form-control" placeholder="Correo">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="telefonoPersonaA" class="form-control" placeholder="Teléfono">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="direccionPersonaA" class="form-control" placeholder="Dirección">
-                    </div>
-                    <div class="form-group">
-                        @foreach ($roles as $rol)
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="tipoDocumentoA">Tipo Doc</label>
+                            <select class="form-control" id="tipoDocumentoA" onchange="segunTipoAct()">
+                                <option value="DNI">DNI</option>
+                                <option value="RUC">RUC</option>
+                            </select>
+                        </div>    
+                        <div class="form-group col-md-4">
+                            <label for="numeroDocumentoA">Numero Doc</label>
+                            <input type="text" id="numeroDocumentoA" class="form-control" placeholder="Número de documento">
+                            <small id="campoNumeroDocA" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="razonSocialA">Razón social</label>
+                            <input type="text" id="razonSocialA" class="form-control" placeholder="Razón Social" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nombresPersonaA">Nombres</label>
+                            <input type="text" id="nombresPersonaA" class="form-control" placeholder="Nombres">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="apellidosPersonaA">Apellidos</label>
+                            <input type="text" id="apellidosPersonaA" class="form-control" placeholder="Apellidos">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="correoPersonaA">Correo</label>
+                            <input type="text" id="correoPersonaA" class="form-control" placeholder="Correo">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="direccionPersonaA">Dirección</label>
+                            <input type="text" id="direccionPersonaA" class="form-control" placeholder="Dirección">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="telfonoPersonaA">Teléfono</label>
+                            <input type="text" id="telefonoPersonaA" class="form-control" placeholder="Teléfono">
+                        </div>
+                        <div class="form-group col-md-12">
+                            @foreach ($roles as $rol)
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="checkbox" id="rol-{{$rol->id}}-A" class="custom-control-input roles-act" value="{{$rol->id}}">
+                                <input type="checkbox" id="rol-{{$rol->id}}-A" class="custom-control-input roles" value="{{$rol->id}}">
                                 <label class="custom-control-label" for="rol-{{$rol->id}}-A">{{$rol->nombre}}</label>
                             </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
-                </form>    
+                </form>
             </div>
 
             <div class="modal-footer">
