@@ -163,6 +163,9 @@ class AccesoController extends Controller
                 case 19:
                     $ruta = "reportes";
                     break;    
+                case 20:
+                    $ruta = "documentos_compra";
+                    break;    
                 
                 default:
                 

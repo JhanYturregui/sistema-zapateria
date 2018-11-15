@@ -33,9 +33,9 @@ class UsuarioController extends Controller
     {
         $accesoController = new AccesoController();
         $datos = $accesoController->obtenerMenus();
-        $tiposUsuario = TipoUsuario::where('estado', true)->orderBy('id', 'desc')->get();
-        $sucursales = Sucursal::where('estado', true)->orderBy('id', 'asc')->get();
         $tipoUsu = Auth::user()->tipo;
+        $tiposUsuario = TipoUsuario::where([['id', '>', $tipoUsu], ['estado', true]])->orderBy('id', 'asc')->get();
+        $sucursales = Sucursal::where([['id', '>', '1'], ['estado', true]])->orderBy('id', 'asc')->get();
         $usuarios = DB::table('usuarios')
                     ->join('tipos_usuario', 'usuarios.tipo', '=', 'tipos_usuario.id')
                     ->select('usuarios.*', 'tipos_usuario.nombre as tipo_usuario')

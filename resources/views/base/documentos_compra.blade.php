@@ -11,40 +11,35 @@
     <input type="hidden" name="_token" id="_token" value="{{ csrf_token() }}">
 
     <div class="botones">
-        @if ($aperturado)
-            <button class="btn btn-primary crear" onclick="crearDocumentoVenta()"><i class="fas fa-plus"></i>Registrar venta</button>    
-        @endif
-        
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <button class="btn btn-primary crear" onclick="crearDocumentoCompra()"><i class="fas fa-plus"></i>Registrar compra</button>
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
         <div class="card text-center">
             <div class="card-header">
-                <h3>Lista de Documentos de Venta</h3>
+                <h3>Lista de Documentos de Compra</h3>
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Numero</th>
-                            <th>Caja</th>
                             <th>Fecha</th>
                             <th>Monto</th>
-                            @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2)
+                            @if (Auth::user()->tipo == 1)
                                 <th>Anular</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($ventas as $venta)
+                        @foreach ($compras as $compra)
                             <tr>
-                                <td>{{ $venta->numero }}</td>
-                                <td>{{ $venta->numero_caja }}</td>
-                                <td>{{ $venta->created_at }}</td>
-                                <td>{{ $venta->monto_total }}</td>
+                                <td>{{ $compra->numero }}</td>
+                                <td>{{ $compra->created_at }}</td>
+                                <td>{{ $compra->monto_total }}</td>
                                 @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2)
-                                    <td><i class="fas fa-trash" title="Anular" onclick="anularDocumentoVenta('{{$venta->numero}}')"></i></td>
+                                    <td><i class="fas fa-trash" title="Anular" onclick="anularDocumentoCompra('{{$compra->numero}}')"></i></td>
                                 @endif
                             </tr>
                         @endforeach
@@ -65,19 +60,19 @@
     </div>
 
     <div class="paginacion">
-        {{ $ventas->links() }}
+        
     </div>
 
 </div>
 
 
 <!-- MODAL CREAR DOCUMENTO -->
-<div class="modal fade" id="modalCrearDocumentoVenta" tabindex="-1" role="dialog" aria-labelledby="crearDocumentoVenta" aria-hidden="true">
+<div class="modal fade" id="modalCrearDocumentoCompra" tabindex="-1" role="dialog" aria-labelledby="crearDocumentoCompra" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <div class="modal-header cabecera-crear">
-                <h5 class="modal-title" id="crearDocumentoVenta">Registrar Venta</h5>
+                <h5 class="modal-title" id="crearDocumentoCompra">Registrar Compra</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -99,12 +94,12 @@
                     </div>
 
                     <div class="col-md-4 form-group">
-                        <label for="docPersona">N° documento Cliente</label>
-                        <input type="text" id="docPersona" class="form-control" placeholder="Ingrese número documento" onkeyup="soloNumerosPersona(event)" onblur="buscarPersona(this.value)">
+                        <label for="docProveedor">N° Doc Proveedor</label>
+                        <input type="text" id="docProveedor" class="form-control" placeholder="Ingrese número documento" onkeyup="soloNumerosPersona(event)" onblur="buscarPersona(this.value)">
                     </div>
                     <div class="col-md-8 form-group">
-                        <label for="datosCliente">Nombre cliente</label>
-                        <input type="text" id="datosCliente" class="form-control" readonly>
+                        <label for="datosProveedor">Dato Proveedor</label>
+                        <input type="text" id="datosProveedor" class="form-control" readonly>
                     </div>
 
                     <div class="col-md-2 form-group"></div>
@@ -226,5 +221,5 @@
 @endsection
 
 @section('js')
-    <script src="{{ asset('js/cruds/documentos_venta.js') }}"></script>
+    <script src="{{ asset('js/cruds/documentos_compra.js') }}"></script>
 @endsection

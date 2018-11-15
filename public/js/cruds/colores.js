@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/colores'
+URI = origin+pathname
 
 /************ COLORES **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearColor').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearColor').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
                     
 
                 }else{
@@ -101,7 +100,7 @@ $('#btnActualizarColor').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarColor').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoColorA').text(a.mensaje)
@@ -141,7 +140,7 @@ $('#btnEliminarColor').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarColor').modal('hide')
-            location.replace(APP_URI+'/colores')
+            location.replace(URI)
         }   
     })
 })

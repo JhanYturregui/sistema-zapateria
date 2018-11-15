@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/documentos_almacen'
+URI = origin+pathname
 
 var prodSeleccionados = []
 var iniciado = true
@@ -66,7 +65,7 @@ $('#btnRegistrarDocumentoAlmacen').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearDocumentoAlmacen').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#mensaje').text(a.mensaje)
@@ -265,7 +264,7 @@ $('#btnAnularDocumento').click(function(){
         success: function(a){
             if(a.estado){
                 $('#modalAnularDocumento').modal('hide')
-                location.replace(URI_ACTUALIZAR)
+                location.replace(URI)
 
             }else{
                 $('#mensajeAnular').text(a.mensaje)

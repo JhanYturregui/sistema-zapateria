@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/caja'
+URI = origin+pathname
 
 // MODAL APERTURAR CAJA
 function aperturarCaja(){
@@ -40,7 +39,7 @@ $('#btnAperturarCaja').click(function(){
             data,
             success: function(a){
                 if(a){
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
                 }
             },
             error: function(e){
@@ -84,7 +83,7 @@ $('#btnCerrarCaja').click(function(){
         data,
         success: function(a){
             if(a){
-                location.replace(URI_CREAR)
+                location.replace(URI)
             }
         },
         error: function(e){
@@ -170,7 +169,7 @@ $('#btnRegistrarMovimiento').click(function(){
             data,
             success: function(a){
                 if(a.estado){
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
                 }
             },
             error: function(e){
@@ -205,7 +204,7 @@ $('#btnAnularMovimiento').click(function(){
         data,
         success: function(a){
             if(a.estado){
-                location.replace(URI_CREAR)
+                location.replace(URI)
             }
         },
         error: function(e){

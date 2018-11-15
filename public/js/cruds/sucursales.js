@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/sucursales'
+URI = origin+pathname
 
 /************ SUCURSALES **************/
 // MODAL CREAR
@@ -37,7 +36,7 @@ $('#btnCrearSucursal').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearSucursal').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
@@ -105,7 +104,7 @@ $('#btnActualizarSucursal').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarSucursal').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
@@ -145,7 +144,7 @@ $('#btnEliminarSucursal').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarSucursal').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

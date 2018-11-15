@@ -1,5 +1,6 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
+
 APP_URI = origin+pathname
 /************ PROVEEDORES **************/
 // MODAL CREAR

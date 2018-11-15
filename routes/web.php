@@ -343,6 +343,10 @@ Route::post('/productos/buscar_pro_ventas', [
     'uses' => 'ProductoController@buscarProductosVentas',
     'as'   => 'buscar_producto_codigo'
 ]);
+Route::post('/productos/buscar_pro_compras', [
+    'uses' => 'ProductoController@buscarProductosCompras',
+    'as'   => 'buscar_producto_codigo_compras'
+]);
 
 /****** Rutas SUCURSALES *****/
 Route::get('/sucursales', [
@@ -416,6 +420,20 @@ Route::delete('/documentos_venta/anular', [
     'as'   => 'anular_documento_venta'
 ]);
 
+/****** Rutas DOCUMENTOS DE COMPRA *****/
+Route::get('/documentos_compra', [
+    'uses' => 'DocumentoCompraController@index',
+    'as'   => 'documentos_compra'
+]);
+Route::post('/documentos_compra/crear', [
+    'uses' => 'DocumentoCompraController@store',
+    'as'   => 'crear_documento_compra'
+]);
+Route::delete('/documentos_compra/anular', [
+    'uses' => 'DocumentoCompraController@anularDocumento',
+    'as'   => 'anular_documento_compra'
+]);
+
 /****** Rutas CAJA *****/
 Route::get('/caja', [
     'uses' => 'CajaController@index',
@@ -450,4 +468,14 @@ Route::get('/reportes', [
 Route::post('/reportes/detalles', [
     'uses' => 'ReporteController@detallesReporte',
     'as'   => 'detalles_reporte'
+]);
+
+/****** Rutas NOTA CRÉDITO *****/
+Route::get('/nota_credito', [
+    'uses' => 'NotaCreditoController@index',
+    'as'   => 'notas_credito'
+]);
+Route::post('/nota_credito/generar', [
+    'uses' => 'NotaCreditoController@generarNotaCredito',
+    'as'   => 'generar_nota'
 ]);

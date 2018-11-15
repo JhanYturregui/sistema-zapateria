@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/lineas'
+URI = origin+pathname
 
 /************ LÍNEAS **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearLinea').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearLinea').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoLinea').text(a.mensaje)
@@ -101,7 +100,7 @@ $('#btnActualizarLinea').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarLinea').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoLineaA').text(a.mensaje)
@@ -141,7 +140,7 @@ $('#btnEliminarLinea').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarLinea').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

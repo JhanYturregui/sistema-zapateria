@@ -7,14 +7,14 @@ var prodSeleccionados = []
 var iniciado = true
 var existePersona = false
 
-/************ DOCUMENTOS ALMACÉN **************/
+/************ DOCUMENTOS COMPRA **************/
 // MODAL CREAR
-function crearDocumentoVenta(){
+function crearDocumentoCompra(){
     var fecha = new Date()
     var fechaActual = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+fecha.getFullYear()
     $('#fechaDoc').val(fechaActual)
     
-    $('#modalCrearDocumentoVenta').modal({
+    $('#modalCrearDocumentoCompra').modal({
         keyboard: false,
         backdrop: 'static'
     })
@@ -122,14 +122,14 @@ $('#btnRegistrarDocumentoVenta').click(function(){
 
 // BUSCAR PRODUCTOS
 function buscarProductos(codigo){
-    if(codigo != ""){
+    if(codigo.length >= 3){
         var data = {
             codigo,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
             type: 'post',
-            url: 'productos/buscar_pro_ventas',
+            url: 'productos/buscar_pro_compras',
             dataType: 'json',
             data,
             success: function(data){
@@ -183,6 +183,7 @@ function agregarProd(event, codigo){
 var total = parseFloat($('#cantTotal').val())
 // AGREGAR PRODUCTO
 function agregarProducto(codigo){
+    console.log(codigo)
     var data = {
         codigo,
         _token: $('input[name=_token]').val(),
@@ -193,6 +194,7 @@ function agregarProducto(codigo){
         dataType: 'json',
         data,
         success: function(data){
+            console.log(data)
             var fila = ""
 
             if(iniciado){

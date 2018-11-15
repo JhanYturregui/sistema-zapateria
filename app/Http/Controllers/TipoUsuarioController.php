@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\TipoUsuario;
 use App\Categoria;
 use App\Opcion;
@@ -19,6 +20,7 @@ class TipoUsuarioController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -33,7 +35,8 @@ class TipoUsuarioController extends Controller
 
         $categorias = Categoria::where('estado', true)->get();
         $opciones = Opcion::where('estado', true)->get();
-        $tiposUsuario = TipoUsuario::where('estado', true)
+        $tipoUsu = Auth::user()->tipo;
+        $tiposUsuario = TipoUsuario::where([['id', '>=', $tipoUsu], ['estado', true]])
                                     ->orderBy('id', 'desc')
                                     ->paginate(10);
         return view('base.tipos_usuario', ['tiposUsuario' => $tiposUsuario, 

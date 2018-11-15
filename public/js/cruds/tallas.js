@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/tallas'
+URI = origin+pathname
 
 /************ TALLAS **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearTalla').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearTalla').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
                     
                 }else{
                     $('#campoTalla').text(a.mensaje)
@@ -100,7 +99,7 @@ $('#btnActualizarTalla').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarTalla').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoTallaA').text(res.mensaje)
@@ -140,7 +139,7 @@ $('#btnEliminarTalla').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarTalla').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

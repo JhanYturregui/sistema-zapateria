@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/reportes'
+URI = origin+pathname
 
 function verDetalles(numeroReporte){
     var data = {

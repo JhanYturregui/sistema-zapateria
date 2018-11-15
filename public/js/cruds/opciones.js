@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/opciones'
+URI = origin+pathname
 
 /************ OPCIONES **************/
 // MODAL CREAR
@@ -40,7 +39,7 @@ $('#btnCrearOpcion').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearOpcion').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
@@ -115,7 +114,8 @@ $('#btnActualizarOpcion').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarOpcion').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    //location.replace(URI)
+                    location.reload()
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
@@ -155,7 +155,7 @@ $('#btnEliminarOpcion').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarOpcion').modal('hide')
-            location.replace(APP_URI+'/opciones')
+            location.replace(URI)
         }   
     })
 })

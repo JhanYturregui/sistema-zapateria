@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/roles'
+URI = origin+pathname
 
 /************ ROLES **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearRol').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearRol').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
@@ -100,7 +99,7 @@ $('#btnActualizarRol').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarRol').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
@@ -140,7 +139,7 @@ $('#btnEliminarRol').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarRol').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

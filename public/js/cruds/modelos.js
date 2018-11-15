@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/modelos'
+URI = origin+pathname
 
 /************ MODELOS **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearModelo').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearModelo').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoModelo').text(a.mensaje)
@@ -101,7 +100,7 @@ $('#btnActualizarModelo').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarModelo').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoModeloA').text(a.mensaje)
@@ -141,7 +140,7 @@ $('#btnEliminarModelo').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarModelo').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

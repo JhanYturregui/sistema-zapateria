@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/marcas'
+URI = origin+pathname
 
 /************ MARCAS **************/
 // MODAL CREAR
@@ -35,7 +34,7 @@ $('#btnCrearMarca').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearMarca').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
                     
                 }else{
                     $('#campoMarca').text(a.mensaje)
@@ -100,7 +99,7 @@ $('#btnActualizarMarca').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarMarca').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoMarcaA').text(a.mensaje)
@@ -140,7 +139,7 @@ $('#btnEliminarMarca').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarMarca').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

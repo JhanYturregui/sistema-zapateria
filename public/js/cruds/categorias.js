@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/categorias'
+URI = origin+pathname
 
 /************ CATEGORÍAS **************/
 // MODAL CREAR
@@ -38,7 +37,7 @@ $('#btnCrearCategoria').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearCategoria').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
@@ -109,7 +108,7 @@ $('#btnActualizarCategoria').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarCategoria').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
@@ -149,7 +148,7 @@ $('#btnEliminarCategoria').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarCategoria').modal('hide')
-            location.replace(URI_CREAR)
+            location.replace(URI)
         }   
     })
 })

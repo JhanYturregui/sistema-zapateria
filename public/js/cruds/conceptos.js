@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/conceptos'
+URI = origin+pathname
 
 /************ CONCEPTOS **************/
 // MODAL CREAR
@@ -37,7 +36,7 @@ $('#btnCrearConcepto').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearConcepto').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombre').text(a.mensaje)
@@ -106,7 +105,7 @@ $('#btnActualizarConcepto').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarConcepto').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNombreA').text(a.mensaje)
@@ -146,7 +145,7 @@ $('#btnEliminarConcepto').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarConcepto').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

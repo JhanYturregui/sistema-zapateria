@@ -1,8 +1,7 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
 
-URI_ACTUALIZAR = origin+pathname
-URI_CREAR = origin+'/usuarios'
+URI = origin+pathname
 
 /************ USUARIOS **************/
 // MODAL CREAR
@@ -47,7 +46,7 @@ $('#btnCrearUsuario').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalCrearUsuario').modal('hide')
-                    location.replace(URI_CREAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoNumeroDoc').text(a.mensaje)
@@ -125,7 +124,7 @@ $('#btnActualizarUsuario').click(function(){
             success: function(a){
                 if(a.estado){
                     $('#modalEditarUsuario').modal('hide')
-                    location.replace(URI_ACTUALIZAR)
+                    location.replace(URI)
 
                 }else{
                     $('#campoUsuarioA').text(res.mensaje)
@@ -165,7 +164,7 @@ $('#btnEliminarUsuario').click(function(){
         data,
         complete: function(a){
             $('#modalEliminarUsuario').modal('hide')
-            location.replace(URI_ACTUALIZAR)
+            location.replace(URI)
         }   
     })
 })

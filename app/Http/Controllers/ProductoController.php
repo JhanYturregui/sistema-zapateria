@@ -146,7 +146,8 @@ class ProductoController extends Controller
                 // Tabla INVENTARIO 
                 $inventario = new Inventario();
                 $inventario->codigo_producto = $codigo;
-                $inventario->sucursal = Auth::user()->sucursal;
+                //$inventario->sucursal = Auth::user()->sucursal;
+                $inventario->sucursal = 1;
                 $inventario->cantidad= 0;
                 $inventario->estado = true;
                 $inventario->save();
@@ -301,12 +302,32 @@ class ProductoController extends Controller
      */
     public function buscarProductosVentas(Request $request){
         $codigo = mb_strtoupper($request->get('codigo'));
+        
         //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
         $productos = DB::table('productos')
                      ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
                      ->select('productos.*', 'inventario.cantidad as cantidad')
                      ->where('productos.codigo', 'LIKE', $codigo.'%')
                      ->where('inventario.cantidad', '>', 0)
+                     ->where('productos.estado', true)
+                     ->get();
+
+        return json_encode($productos);
+    }
+
+    /**
+     * Buscar productos para compras por código
+     * @param Request $request
+     * @return json $productos
+     */
+    public function buscarProductosCompras(Request $request){
+        $codigo = mb_strtoupper($request->get('codigo'));
+        
+        //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
+        $productos = DB::table('productos')
+                     ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
+                     ->select('productos.*', 'inventario.cantidad as cantidad')
+                     ->where('productos.codigo', 'LIKE', $codigo.'%')
                      ->where('productos.estado', true)
                      ->get();
 

@@ -1,6 +1,8 @@
 var origin = localStorage.getItem('url')
 var pathname = window.location.pathname
-APP_URI = origin+pathname
+
+URI = origin+pathname
+
 /************ PROVEEDORES **************/
 // MODAL CREAR
 function crearProducto(){
@@ -55,7 +57,7 @@ $('#btnCrearProducto').click(function(){
             success: function(res){
                 if(res.estado){
                     $('#modalCrearProducto').modal('hide')
-                    location.replace(APP_URI)
+                    location.replace(URI)
                         
                 }else{
                     $('#error').text(res.mensaje)
@@ -145,7 +147,7 @@ $('#btnActualizarProducto').click(function(){
         success: function(res){
             if(res.estado){
                 $('#modalEditarProducto').modal('hide')
-                location.replace(APP_URI)
+                location.replace(URI)
 
             }else{
                 $('#errorA').text(res.mensaje)
@@ -183,7 +185,7 @@ $('#btnEliminarProducto').click(function(){
         data,
         success: function(a){
             $('#modalEliminarProducto').modal('hide')
-            location.replace(APP_URI)
+            location.replace(URI)
         },
         error: function(a){
             console.log(a)
