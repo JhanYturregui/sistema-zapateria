@@ -14,13 +14,14 @@ function crearProducto(){
 
 // CREAR 
 $('#btnCrearProducto').click(function(){
-    var codigo = $('#codigo').val()
+    var modelo = $('#modelo').val()
     var descripcion = $('#descripcion').val()
     var marca = $('#marca').val()
-    var modelo = $('#modelo').val()
     var color = $('#color').val()
-    var talla = $('#talla').val()
+    var taco = $('#taco').val()
     var linea = $('#linea').val()
+    var linea2 = $('#linea2').val()
+    var linea3 = $('#linea3').val()
     var compra = $('#precioCompra').val()
     var precioCompra = parseFloat(compra)
     var venta = $('#precioVenta').val()
@@ -38,13 +39,14 @@ $('#btnCrearProducto').click(function(){
 
     }else{
         var data = {
-            codigo,
+            modelo,
             descripcion,
             marca,
-            modelo,
             color,
-            talla,
+            taco,
             linea,
+            linea2,
+            linea3,
             precioCompra,
             precioVenta,
             _token: $('input[name=_token]').val(),
@@ -84,23 +86,25 @@ function editarProducto(id){
         },
         complete: function(res){
             var data = res.responseJSON
-            var codigo = data.codigo
+            var modelo = data.modelo
             var descripcion = data.descripcion
             var marca = data.marca
-            var modelo = data.modelo
             var color = data.color
-            var talla = data.talla
+            var taco = data.taco
             var linea = data.linea
+            var linea2 = data.linea_2
+            var linea3 = data.linea_3
             var precioCompra = data.precio_compra
             var precioVenta = data.precio_venta
 
-            $('#codigoA').val(codigo)
-            $('#descripcionA').val(descripcion)
-            $('#marcaA').val(marca)
             $('#modeloA').val(modelo)
-            $('#colorA').val(color)
-            $('#tallaA').val(talla)
-            $('#lineaA').val(linea)
+            $('#descripcionA').val(descripcion)
+            $('#marcaA').val(marca).trigger('change')
+            $('#colorA').val(color).trigger('change')
+            $('#tacoA').val(taco).trigger('change')
+            $('#lineaA').val(linea).trigger('change')
+            $('#linea2A').val(linea2).trigger('change')
+            $('#linea3A').val(linea3).trigger('change')
             $('#precioCompraA').val(precioCompra)
             $('#precioVentaA').val(precioVenta)
             $('#idProductoA').val(id)
@@ -121,7 +125,7 @@ $('#btnActualizarProducto').click(function(){
     var marca = $('#marcaA').val()
     var modelo = $('#modeloA').val()
     var color = $('#colorA').val()
-    var talla = $('#tallaA').val()
+    var taco = $('#tacoA').val()
     var linea = $('#lineaA').val()
     var precioCompra = $('#precioCompraA').val()
     var precioVenta = $('#precioVentaA').val()
@@ -133,7 +137,7 @@ $('#btnActualizarProducto').click(function(){
         marca,
         modelo,
         color,
-        talla,
+        taco,
         linea,
         precioCompra,
         precioVenta,
@@ -194,3 +198,22 @@ $('#btnEliminarProducto').click(function(){
         }   
     })
 })
+
+function buscarPorCodigo(codigo){
+    var data = {
+        codigo,
+        _token: $('input[name=_token]').val(),
+    }
+    $.ajax({
+        type: 'post',
+        url: 'productos/listarxCod',
+        dataType: 'json',
+        data,
+        success: function(a){
+            
+        },
+        error: function(a){
+
+        }   
+    })
+}

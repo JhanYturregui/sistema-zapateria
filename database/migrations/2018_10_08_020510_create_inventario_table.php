@@ -18,6 +18,8 @@ class CreateInventarioTable extends Migration
             $table->string('codigo_producto');
             $table->integer('sucursal');
             $table->integer('cantidad');
+            $table->json('tallas')->nullable();
+            $table->json('cantidad_talla')->nullable();
             $table->boolean('estado');
             $table->timestamps();
         });

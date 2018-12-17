@@ -35,7 +35,7 @@ class DocumentoAlmacenController extends Controller
 
         $sucursal = Auth::user()->sucursal;
         $sucursales = Sucursal::where([['estado', true], ['id', '!=', $sucursal ]])->orderBy('id', 'asc')->get();
-        $documentos = DocumentoAlmacen::where('estado', true)->orderBy('created_at', 'desc')->paginate(10);
+        $documentos = DocumentoAlmacen::where('origen', $sucursal)->orWhere('destino', $sucursal)->orderBy('created_at', 'desc')->paginate(10);
         $numeroDoc = DB::table('documentos_almacen')
                      ->select('numero')
                      ->orderBy('created_at', 'desc')->first();
@@ -59,9 +59,82 @@ class DocumentoAlmacenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $numeroDoc = $request->get('numeroDoc');
+        $suc = $request->get('sucursal');
+        $comentario = $request->get('comentario');
+        $productos = $request->get('productos');
+        $dataTallas = $request->get("dataTallas");
+        $sucursal = Auth::user()->sucursal;
+
+        $dataProd = array();
+        $cantProd = array();
+        $response = array();
+
+        // Verificar stock
+        foreach ($dataTallas as $k => $v) {
+            for($i=0; $i<count($v); $i++){
+                $cod = $v[$i]["codigo"];
+                $tall = $v[$i]["talla"];
+                $cantid = $v[$i]["cantidad"];
+                $inv = Inventario::where([['codigo_producto', $cod], ['sucursal', $sucursal]])->first(); 
+                $tempTallas = json_decode($inv->tallas);
+                $tempCantidades = json_decode($inv->cantidad_talla);
+                $ind = array_search($tall, $tempTallas);
+                if($cantid > $tempCantidades[$ind]){
+                    $response["estado"] = false;
+                    $response["mensaje"] = "El producto con código: ".$cod." y talla ".$tall." excede el nivel de stock";
+                    return json_encode($response);
+                }
+            }
+        }
+        
+        $arrayCodigos = array();
+        $arrayCantidades = array();
+        foreach ($productos as $key => $value) {
+            $codigo = $value["codigo"];
+            $cantidad = $value["cantidad"];
+            array_push($arrayCodigos, $codigo);
+            array_push($arrayCantidades, $cantidad);
+        }
+        $jsonCodigos = json_encode($arrayCodigos);
+        $jsonCantidades = json_encode($arrayCantidades);
+
+        $arrayNTallas = array();
+        $arrayNCantidades = array();
+        foreach ($dataTallas as $k => $v) {
+            for($i=0; $i<count($v); $i++){
+                $cod = $v[$i]["codigo"];
+                $tall = $v[$i]["talla"];
+                $cantid = $v[$i]["cantidad"];
+                $aux = $cod."*".$tall;
+                array_push($arrayNTallas, $aux);
+                array_push($arrayNCantidades, $cantid);
+            }
+        }
+        $jsonTallas = json_encode($arrayNTallas);
+        $jsonCantds = json_encode($arrayNCantidades);
+        //print_r($arrayNTallas);exit;
+
+        // Tabla DOCUMENTOS_ALMACEN
+        $documento = new DocumentoAlmacen();
+        $documento->numero = $numeroDoc;
+        $documento->origen = Auth::user()->sucursal;
+        $documento->destino = $suc;
+        $documento->usuario = Auth::user()->id;
+        $documento->productos = $jsonCodigos;
+        $documento->cantidades = $jsonCantidades;
+        $documento->tallas = $jsonTallas;
+        $documento->cantidad_talla = $jsonCantds;
+        $documento->comentario = $comentario;
+        $documento->estado = 1;
+        $documento->save();
+        
+        $response["estado"] = true;
+        $response["mensaje"] = "";
+
+        return json_encode($response);
     }
 
     /**
@@ -73,85 +146,90 @@ class DocumentoAlmacenController extends Controller
     public function store(Request $request)
     {
         $numeroDoc = $request->get('numeroDoc');
-        $tipoDoc = $request->get('tipoDoc');
-        $suc = $request->get('sucursal');
-        $comentario = $request->get('comentario');
-        $productos = $request->get('productos');
-        $dataProd = array();
-        $cantProd = array();
         $response = array();
 
-        // INGRESO
-        if($tipoDoc == 'ingreso'){
-            foreach ($productos as $key => $value) {
-                $codigo = $value["codigo"];
-                $cantidad = $value["cantidad"];
+        $documento = DocumentoAlmacen::where('numero', $numeroDoc)->first();
+        $origen = $documento->origen;
+        $destino = $documento->destino;
+        $productos = json_decode($documento->productos);
+        $cantidades = json_decode($documento->cantidades);
+        $tallas = json_decode($documento->tallas);
+        $cantidadTalla = json_decode($documento->cantidad_talla);
 
-                array_push($dataProd, $codigo);
-                array_push($cantProd, $cantidad);
-
-                // Tabla Inventario
-                $inventario = Inventario::where('codigo_producto', $codigo)->first();
-                $cantProducto = $inventario->cantidad;
-                $cantProducto = $cantProducto + $cantidad;
-                $inventario->cantidad = $cantProducto;
-                $inventario->save();
+        foreach ($productos as $key => $value) {
+            $existe = Inventario::where([['codigo_producto', $value], ['sucursal', $destino]])->exists();
+            if(!$existe){
+                $inv = new Inventario();
+                $inv->codigo_producto = $value;
+                $inv->sucursal = $destino;
+                $inv->cantidad = 0;
+                $inv->tallas = json_encode(array());
+                $inv->cantidad_talla = json_encode(array());
+                $inv->estado = true;
+                $inv->save();
             }
+        }
 
-        // SALIDA    
-        }else{
-            // Verificar stock disponible
-            foreach ($productos as $key => $value) {
-                $codigo = $value["codigo"];
-                $cantidad = $value["cantidad"];
-
-                // Tabla Inventario
-                $inventario = Inventario::where('codigo_producto', $codigo)->first();
-                $cantProducto = $inventario->cantidad;
-                $cantProducto = $cantProducto - $cantidad;
-
-                if($cantProducto < 0){
-                    $response["estado"] = false;
-                    $response["mensaje"] = "El producto con código ".$codigo." no tiene el stock suficiente para realizar esta operación";
-
-                    return json_encode($response);
+        // Inventario de quien envía
+        foreach ($productos as $key => $value) {
+            $inv = Inventario::where([['codigo_producto', $value], ['sucursal', $origen]])->first();
+            $auxTallas = json_decode($inv->tallas);
+            $auxCantidades = json_decode($inv->cantidad_talla);
+            for($i=0; $i<count($tallas); $i++) {
+                $aux = explode("*", $tallas[$i]);
+                $cod = $aux[0];
+                $tall = $aux[1];
+                if($cod == $value){
+                    $ind = array_search($tall, $auxTallas);
+                    $nuevaCant = $auxCantidades[$ind] - $cantidadTalla[$i];
+                    $auxCantidades[$ind] = $nuevaCant;
                 }
             }
+            
+            $jsonTallas = json_encode($auxTallas);
+            $jsonCantidades = json_encode($auxCantidades);
+            $aux2 = $inv->cantidad - $cantidades[$key];
 
-            foreach ($productos as $key => $value) {
-                $codigo = $value["codigo"];
-                $cantidad = $value["cantidad"];
-
-                array_push($dataProd, $codigo);
-                array_push($cantProd, $cantidad);
-
-                // Tabla Inventario
-                $inventario = Inventario::where('codigo_producto', $codigo)->first();
-                $cantProducto = $inventario->cantidad;
-                $cantProducto = $cantProducto - $cantidad;
-                $inventario->cantidad = $cantProducto;
-                $inventario->save();
-            }
+            $inv->cantidad = $aux2;
+            $inv->tallas = $jsonTallas;
+            $inv->cantidad_talla = $jsonCantidades;
+            $inv->save();
         }
-        $dataProd = json_encode($dataProd);
-        $cantProd = json_encode($cantProd);
-
-        // Tabla DOCUMENTOS_ALMACEN
-        $documento = new DocumentoAlmacen();
-        $documento->numero = $numeroDoc;
-        $documento->tipo = $tipoDoc;
-        if($tipoDoc == 'ingreso'){
-            $documento->origen = $suc;
-        }else{
-            $documento->destino = $suc;
-        }
-        $documento->usuario = Auth::user()->id;
-        $documento->productos = $dataProd;
-        $documento->cantidades = $cantProd;
-        $documento->comentario = $comentario;
-        $documento->estado = true;
-        $documento->save();
         
+        // Inventario de quien acepta
+        foreach ($productos as $key => $value) {
+            $inv = Inventario::where([['codigo_producto', $value], ['sucursal', $destino]])->first();
+            $auxTallas = json_decode($inv->tallas);
+            $auxCantidades = json_decode($inv->cantidad_talla);
+            for($i=0; $i<count($tallas); $i++) {
+                $aux = explode("*", $tallas[$i]);
+                $cod = $aux[0];
+                $tall = $aux[1];
+                if($cod == $value){
+                    if(in_array($tall, $auxTallas)){
+                        $ind = array_search($tall, $auxTallas);
+                        $nuevaCant = $auxCantidades[$ind] + $cantidadTalla[$i];
+                        $auxCantidades[$ind] = $nuevaCant;
+
+                    }else{
+                        array_push($auxTallas, $tall);
+                        array_push($auxCantidades, $cantidadTalla[$i]);
+                    }
+                }
+            }
+            $jsonTallas = json_encode($auxTallas);
+            $jsonCantidades = json_encode($auxCantidades);
+            $aux2 = $inv->cantidad + $cantidades[$key];
+
+            $inv->cantidad = $aux2;
+            $inv->tallas = $jsonTallas;
+            $inv->cantidad_talla = $jsonCantidades;
+            $inv->save();
+        }
+
+        $documento->estado = 2;
+        $documento->save();
+
         $response["estado"] = true;
         $response["mensaje"] = "";
 
@@ -168,60 +246,45 @@ class DocumentoAlmacenController extends Controller
     {
         $numeroDoc = $request->get('numeroDoc');
         $documento = DocumentoAlmacen::where('numero', $numeroDoc)->first();
-
-        $productos = $documento->productos;
-        $productos = json_decode($productos);
-        $cantidades = $documento->cantidades;
-        $cantidades = json_decode($cantidades);
-        $tipo = $documento->tipo;
-
         $response = array();
-        
-        if($tipo == 'salida'){
+
+        if($documento->estado == 2){
+            $productos = $documento->productos;
+            $productos = json_decode($productos);
+            $cantidades = $documento->cantidades;
+            $cantidades = json_decode($cantidades);
+            $origen = $documento->origen;
+            $destino = $documento->destino;
+
             for($i=0; $i<count($productos); $i++){
-                $inventario = Inventario::where('codigo_producto', $productos[$i])->first();
-                $cantidadActual = $inventario->cantidad;
-                $nuevaCantidad = $cantidadActual + $cantidades[$i];
+                $invOri = Inventario::where([['codigo_producto', $productos[$i], ['sucursal', $origen]]])->first();
+                $cant = $invOri->cantidad;
+                $cant = $cant + $cantidades[$i];
+                $invOri->cantidad = $cant;
+                $invOri->save();
 
-                $inventario->cantidad = $nuevaCantidad;
-                $inventario->save();  
-            }
-            $response["estado"] = true;
-            $response["mensaje"] = "";
-
-        }else{
-            for($i=0; $i<count($productos); $i++){
-                $inventario = Inventario::where('codigo_producto', $productos[$i])->first();
-                $cantidadActual = $inventario->cantidad;
-                $nuevaCantidad = $cantidadActual - $cantidades[$i];
-
-                if($nuevaCantidad<0){
+                $invDest = Inventario::where([['codigo_producto', $productos[$i], ['sucursal', $destino]]])->first();
+                $cant = $invDest->cantidad;
+                $cant = $cant - $cantidades[$i];
+                if($cant<0){
                     $response["estado"] = false;
-                    $response["mensaje"] = "El documento de almacén ".$numeroDoc." no puede ser anulado";
+                    $response["mensaje"] = "No hay stock suficiente para realizar esta operación";
 
                     return json_encode($response);
-                }  
-            }
-
-            for($i=0; $i<count($productos); $i++){
-                $inventario = Inventario::where('codigo_producto', $productos[$i])->first();
-                $cantidadActual = $inventario->cantidad;
-                $nuevaCantidad = $cantidadActual - $cantidades[$i];
-                
-                $inventario->cantidad = $nuevaCantidad;
-                $inventario->save();
+                }
+                $invDest->cantidad = $cant;
+                $invDest->save();
             }
         }
 
+        $documento->estado = 3;
         $documento->usuario_anulacion = Auth::user()->id;
-        $documento->estado = false;
         $documento->save();
 
-        $response["estado"] = false;
+        $response["estado"] = true;
         $response["mensaje"] = "";
 
         return json_encode($response);
-
     }
 
 }

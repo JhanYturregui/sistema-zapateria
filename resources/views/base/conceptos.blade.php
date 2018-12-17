@@ -12,7 +12,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearConcepto()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">

@@ -128,26 +128,39 @@
 
             <div class="modal-body">
                 <form>
-                    <div class="form-group">
-                        <input type="text" id="numeroDocA" class="form-control" placeholder="Número de documento" readonly>
+                    <div class="form-group row">
+                        <label for="numeroDocA" class="col-sm-3">N° doc</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="numeroDocA" class="form-control" placeholder="Número de documento">
+                            <small id="campoNumeroDoc" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" id="usuarioA" class="form-control" placeholder="Usuario">
-                        <small id="campoUsuarioA" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
+                    <div class="form-group row">
+                        <label for="usuarioA" class="col-sm-3">Usuario</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="usuarioA" class="form-control" placeholder="Usuario">
+                            <small id="campoUsuarioA" class="help-block col-sm-offset-0 col-sm-12 validar-campo">Campo obligatorio</small>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <select class="form-control" id="tipoUsuarioA">
-                            @foreach ($tiposUsuario as $tipo)
-                                <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control" id="sucursalA">
-                            @foreach ($sucursales as $sucursal)
-                                <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>
-                            @endforeach
-                        </select>
+                    <div class="form-group row">
+                        <label for="tipoUsuarioA" class="col-sm-3">Tipo Usuario</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="tipoUsuarioA">
+                                @foreach ($tiposUsuario as $tipo)
+                                    <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <label for="sucursalA" class="col-sm-3">Sucursal</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="sucursalA">
+                                @foreach ($sucursales as $sucursal)
+                                    <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </form>    
             </div>

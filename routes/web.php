@@ -221,6 +221,14 @@ Route::delete('/tallas/eliminar', [
     'uses' => 'TallaController@destroy',
     'as'   => 'eliminar_talla'
 ]);
+Route::post('/tallas/listar', [
+    'uses' => 'TallaController@listar',
+    'as'   => 'listar_tallas'
+]);
+Route::post('/tallas/listar_cod', [
+    'uses' => 'TallaController@listarTallasCodigo',
+    'as'   => 'listar_tallas_codigo'
+]);
 
 /****** Rutas MARCAS *****/
 Route::get('/marcas', [
@@ -309,6 +317,10 @@ Route::delete('/proveedores/eliminar', [
     'uses' => 'ProveedorController@destroy',
     'as'   => 'eliminar_proveedor'
 ]);
+Route::post('/proveedores/buscar', [
+    'uses' => 'ProveedorController@buscar',
+    'as'   => 'buscar_proveedor'
+]);
 
 /****** Rutas PRODUCTOS *****/
 Route::get('/productos', [
@@ -346,6 +358,10 @@ Route::post('/productos/buscar_pro_ventas', [
 Route::post('/productos/buscar_pro_compras', [
     'uses' => 'ProductoController@buscarProductosCompras',
     'as'   => 'buscar_producto_codigo_compras'
+]);
+Route::post('/productos/listarxCod', [
+    'uses' => 'ProductoController@listarxCod',
+    'as'   => 'buscar_por_codigo'
 ]);
 
 /****** Rutas SUCURSALES *****/
@@ -398,8 +414,12 @@ Route::get('/documentos_almacen', [
     'as'   => 'documentos_almacen'
 ]);
 Route::post('/documentos_almacen/crear', [
-    'uses' => 'DocumentoAlmacenController@store',
+    'uses' => 'DocumentoAlmacenController@create',
     'as'   => 'crear_documento_almacen'
+]);
+Route::post('/documentos_almacen/aceptar', [
+    'uses' => 'DocumentoAlmacenController@store',
+    'as'   => 'aceptar_documento_almacen'
 ]);
 Route::delete('/documentos_almacen/anular', [
     'uses' => 'DocumentoAlmacenController@anularDocumento',
@@ -418,6 +438,14 @@ Route::post('/documentos_venta/crear', [
 Route::delete('/documentos_venta/anular', [
     'uses' => 'DocumentoVentaController@anularDocumento',
     'as'   => 'anular_documento_venta'
+]);
+Route::post('/documentos_venta/listar_vendidos', [
+    'uses' => 'DocumentoVentaController@listarVendidos',
+    'as'   => 'listar_vendidos'
+]);
+Route::post('/documentos_venta/cambiar_talla', [
+    'uses' => 'DocumentoVentaController@cambiarTalla',
+    'as'   => 'cambiar_talla'
 ]);
 
 /****** Rutas DOCUMENTOS DE COMPRA *****/

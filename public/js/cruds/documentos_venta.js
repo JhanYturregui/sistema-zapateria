@@ -6,6 +6,7 @@ URI = origin+pathname
 var prodSeleccionados = []
 var iniciado = true
 var existePersona = false
+var dataTallas = []
 
 /************ DOCUMENTOS ALMACÉN **************/
 // MODAL CREAR
@@ -19,6 +20,9 @@ function crearDocumentoVenta(){
         backdrop: 'static'
     })
 }
+$('#modalCrearDocumentoVenta').on('shown.bs.modal', function() {
+  $('#codigoProd').focus();
+})
 
 // CREAR 
 $('#btnRegistrarDocumentoVenta').click(function(){
@@ -33,9 +37,10 @@ $('#btnRegistrarDocumentoVenta').click(function(){
             var codigo = prodSeleccionados[i]
             var cantidad = $('#cant-'+codigo).val()
             var descuento = $('#desc-'+codigo).val()
+            var talla = $('#talla'+codigo).val()
 
             if(cantidad > 0){
-                aux = {codigo, cantidad, descuento}
+                aux = {codigo, cantidad, talla, descuento}
                 productos.push(aux)
             }else{
                 boolCant = false 
@@ -94,6 +99,7 @@ $('#btnRegistrarDocumentoVenta').click(function(){
             montosPago,
             productos,
             cantTotal,
+            dataTallas,
             _token: $('input[name=_token]').val(),
         }
         $.ajax({
@@ -113,8 +119,6 @@ $('#btnRegistrarDocumentoVenta').click(function(){
             },
             error: function(e){
                 console.log(e)
-                //$('#mensaje').text(e.message)
-                //$('#mensaje').css('display', 'inline')
             }
         })
     }
@@ -122,7 +126,7 @@ $('#btnRegistrarDocumentoVenta').click(function(){
 
 // BUSCAR PRODUCTOS
 function buscarProductos(codigo){
-    if(codigo != ""){
+    if(codigo.length > 3){
         var data = {
             codigo,
             _token: $('input[name=_token]').val(),
@@ -156,6 +160,7 @@ function buscarProductos(codigo){
                     }
                     $('#productosSeleccionar').append(fila)
                     $('#productos').css('display', 'inline')
+
                 }else{
                     $('#productosSeleccionar').html("")
                     $('#productos').css('display', 'none')
@@ -193,6 +198,7 @@ function agregarProducto(codigo){
         dataType: 'json',
         data,
         success: function(data){
+            var tallas = JSON.parse(data.tallas)
             var fila = ""
 
             if(iniciado){
@@ -200,15 +206,12 @@ function agregarProducto(codigo){
                 iniciado = false
                 fila += '<tr id="fila-'+codigo+'">'+
                             '<td>'+data.codigo+'</td>'+
-                            '<td>'+data.marca+'</td>'+
-                            '<td>'+data.modelo+'</td>'+
-                            '<td>'+data.color+'</td>'+
-                            '<td>'+data.talla+'</td>'+
-                            '<td>'+data.linea+'</td>'+
+                            '<td>'+data.descripcion+'</td>'+
+                            '<td><i class="tallas fas fa-pen" onclick="tallas('+"'"+codigo+"'"+')" title="Elegir tallas"></i></td>'+
                             '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                            '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                            '<td><input id="cant-'+data.codigo+'" readonly onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="0"/></td>'+
                             '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
-                            '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
+                            '<td><input class="cantidad" value="0" id="final-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                             '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>'+
                         '</tr>'
 
@@ -216,10 +219,12 @@ function agregarProducto(codigo){
                 $('#productosSeleccionados').css('display', 'inline')
                 $('#caja').css('display', 'inline')
 
-                //var precFinal = $('#final-'+data.codigo).val()
-                //console.log(precFinal) 
+                $('#productosSeleccionar').html("")
+                $('#productos').css("display", "none")
+                $('#codigoProd').val("")
                 
-                total = total + parseFloat(data.precio_venta)
+                //total = total + parseFloat(data.precio_venta)
+                total = 0
                 $('#cantTotal').val(total)
                 $('#cantEfectivo').val(total)
 
@@ -244,15 +249,12 @@ function agregarProducto(codigo){
                     
                     if(existeFila>0){
                         fila += '<td>'+data.codigo+'</td>'+
-                                '<td>'+data.marca+'</td>'+
-                                '<td>'+data.modelo+'</td>'+
-                                '<td>'+data.color+'</td>'+
-                                '<td>'+data.talla+'</td>'+
-                                '<td>'+data.linea+'</td>'+
+                                '<td>'+data.descripcion+'</td>'+
+                                '<td><i class="tallas fas fa-pen" onclick="tallas('+"'"+codigo+"'"+')" title="Elegir tallas"></i></td>'+
                                 '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                                '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                                '<td><input id="cant-'+data.codigo+'" readonly onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="0"/></td>'+
                                 '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
-                                '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
+                                '<td><input class="cantidad" value="0" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                                 '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>' 
 
                         row.append(fila)
@@ -261,15 +263,12 @@ function agregarProducto(codigo){
 
                         fila += '<tr id="fila-'+codigo+'">'+
                                     '<td>'+data.codigo+'</td>'+
-                                    '<td>'+data.marca+'</td>'+
-                                    '<td>'+data.modelo+'</td>'+
-                                    '<td>'+data.color+'</td>'+
-                                    '<td>'+data.talla+'</td>'+
-                                    '<td>'+data.linea+'</td>'+
+                                    '<td>'+data.descripcion+'</td>'+
+                                    '<td><i class="tallas fas fa-pen" onclick="tallas('+"'"+codigo+"'"+')" title="Elegir tallas"></i></td>'+
                                     '<td id="precio-'+codigo+'">'+data.precio_venta+'</td>'+
-                                    '<td><input id="cant-'+data.codigo+'" onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="1"/></td>'+
+                                    '<td><input id="cant-'+data.codigo+'" readonly onkeyup="soloNumeros(event, '+"'"+data.codigo+"'"+')" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'c'"+')" type="text" class="cantidad" value="0"/></td>'+
                                     '<td><input class="cantidad" value="0" id="desc-'+data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'d'"+')" /></td>'+
-                                    '<td><input class="cantidad" value="'+data.precio_venta+'" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
+                                    '<td><input class="cantidad" value="0" id="final-' +data.codigo+'" onblur="calcularTotal('+"'"+data.codigo+"'"+', '+"'f'"+')" /></td>'+
                                     '<td><i class="fas fa-times" onclick="eliminarProducto('+"'"+data.codigo+"'"+', '+"'"+data.precio_venta+"'"+')"></i></td>'+
                                 '</tr>'
                         
@@ -279,11 +278,12 @@ function agregarProducto(codigo){
                     $('#productosSeleccionados').css('display', 'inline')
                     $('#caja').css('display', 'inline')
                     
-                    //var precFinal = $('#final-'+data.codigo).val()
-                    //console.log(precFinal) 
+                    $('#productosSeleccionar').html("")
+                    $('#productos').css("display", "none")
+                    $('#codigoProd').val("")
 
                     total = parseFloat($('#cantTotal').val())
-                    total = total + parseFloat(data.precio_venta)
+                    //total = total + parseFloat(data.precio_venta)
                     $('#cantTotal').val(total)
                     $('#cantEfectivo').val(total)    
 
@@ -325,18 +325,41 @@ function agregarProducto(codigo){
 
 // ELIMINAR PRODUCTO SELECCIONADO
 function eliminarProducto(codigo, precio){
-    //var aux = $('#cant-'+codigo).val()
-    //var aux2 = aux*parseFloat(precio)
-    //var aux3 = parseFloat($('#cantTotal').val())
-    //var nuevoTotal = aux3-aux2
-    //$('#cantTotal').val(nuevoTotal)
-
     $('#fila-'+codigo).html('')
     var i = prodSeleccionados.indexOf(codigo)
     if(i !== -1){
         prodSeleccionados.splice(i, 1)
     }
     $('#mensaje').css('display', 'none')
+
+    var eliminar = true
+    dataTemp = []
+    for(j=0; j<dataTallas.length; j++){
+        temp = {}
+        $.each(dataTallas[j], function(k, item) {
+            cod = item.codigo
+            if(cod == codigo){
+                tall = item.talla
+                cant = item.cantidad
+                temp = {codigo: cod, cantidad: cant, talla: tall}
+                dataTemp.push(temp)
+            }
+        });
+        if(dataTemp.length > 0){
+            for(m=0; m<dataTemp.length; m++){
+                aux4 = dataTemp[m].codigo
+                aux2 = dataTemp[m].cantidad
+                aux3 = dataTemp[m].talla
+                if(aux4 != dataTallas[j][m].codigo || aux2 != dataTallas[j][m].cantidad || aux3 != dataTallas[j][m].talla){
+                    eliminar = false
+                }
+            }
+            if(eliminar){
+                dataTallas.splice(dataTallas[j], 1)
+            }
+        }
+    }
+    console.log(dataTallas)
 
     if(prodSeleccionados.length == 0){
         $('#productosSeleccionados').css('display', 'none')
@@ -609,5 +632,207 @@ $('#btnAnularDocumentoVenta').click(function(){
             $('#mensajeAnular').text(e.message)
             $('#anularDoc').css('display', 'inline')
         }   
+    })
+})
+
+function tallas(codigo){
+    //console.log(dataTallas)
+    $('#cuerpoTallas').html('')
+    $('#footerTallas').html('')
+    var data = {
+        codigo,
+        _token: $('input[name=_token]').val(),
+    }
+    $.ajax({
+        type: 'post',
+        url: 'tallas/listar_cod',
+        dataType: 'json',
+        data,
+        success: function(data){
+            var cuerpo = '<div class="row">'
+            var dato = ''
+            for(i=0; i<data.length; i++){                
+                dato += '<div class="col-md-3">'+
+                            '<div class="custom-control custom-checkbox">'+
+                                '<input type="checkbox" class="custom-control-input" id="tall-'+codigo+'-'+data[i]+'" value='+data[i]+' />'+
+                                '<label class="custom-control-label" for="tall-'+codigo+'-'+data[i]+'">'+data[i]+'</label>'+
+                                '<input class="form-control" id="cant-'+codigo+'-'+data[i]+'" />'+
+                            '</div>'+
+                        '</div>'        
+            }
+            cuerpo += dato
+            cuerpo += '</di>'
+            $('#cuerpoTallas').append(cuerpo)
+
+            for(j=0; j<dataTallas.length; j++){
+                $.each(dataTallas[j], function(k, item) {
+                    cod = item.codigo
+                    tall = item.talla
+                    cant = item.cantidad
+                    if(cod == codigo){
+                        $('#tall-'+cod+'-'+tall).prop('checked', true)
+                        $('#cant-'+cod+'-'+tall).val(cant)
+                    }
+                });
+            }
+
+            var footer = ''
+            footer += '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>'+
+                      '<button type="button" class="btn btn-warning" onclick="guardarTallas('+"'"+codigo+"'"+')">Guardar</button>'
+            $('#footerTallas').append(footer)          
+        },
+        error: function(e){
+            
+        }   
+    })
+    $('#tituloTallas').text('Producto: '+codigo)
+    $('#modalTallas').modal({
+        keyboard: false,
+        backdrop: 'static'
+    })
+}
+
+function guardarTallas(codigo){
+    var eliminar = true
+    var dataTemp = []
+    if(dataTallas.length > 0){
+        for(j=0; j<dataTallas.length; j++){
+            temp = {}
+            $.each(dataTallas[j], function(k, item) {
+                cod = item.codigo
+                if(cod == codigo){
+                    tall = item.talla
+                    cant = item.cantidad
+                    temp = {codigo: cod, cantidad: cant, talla: tall}
+                    dataTemp.push(temp)
+                }
+            });
+            if(dataTemp.length > 0){
+                for(m=0; m<dataTemp.length; m++){
+                    aux4 = dataTemp[m].codigo
+                    aux2 = dataTemp[m].cantidad
+                    aux3 = dataTemp[m].talla
+                    if(aux4 != dataTallas[j][m].codigo || aux2 != dataTallas[j][m].cantidad || aux3 != dataTallas[j][m].talla){
+                        eliminar = false
+                    }
+                }
+                if(eliminar){
+                    dataTallas.splice(dataTallas[j], 1)
+                }
+            }
+        }
+    }
+
+    var dataAux = []
+    var seleccionados = $('input:checkbox:checked').map(function(_, el) {
+        return $(el).val();
+    }).get()
+
+    var contador = 0
+    for(i=0; i<seleccionados.length; i++){
+        aux = {}
+        var cantidad = $('#cant-'+codigo+'-'+seleccionados[i]).val()
+        var talla = seleccionados[i]
+
+        aux = {codigo, cantidad, talla}
+        dataAux.push(aux)
+        contador = contador + parseInt(cantidad)
+    }
+    dataTallas.push(dataAux)
+    //console.log(prodSeleccionados)
+    $('#cant-'+codigo).val(contador)
+    $('#desc-'+codigo).focus()
+    $('#modalTallas').modal('hide')
+}
+
+// CAMBIAR TALLA
+function cambiarTalla(numDoc, numCaja){
+    $('#cuerpoCambiar').html('  ')
+    var data = {
+        numDoc,
+        numCaja,
+        _token: $('input[name=_token]').val(),
+    }
+    $.ajax({
+        type: 'post',
+        url: 'documentos_venta/listar_vendidos',
+        dataType: 'json',
+        data,
+        success: function(a){
+            var dato = '<table class="table table-bordered table-sm" style="text-align:center;font-size:0.8em">'+
+                            '<thead style="color: #fff">'+
+                                '<tr class="bg-info">'+
+                                    '<th>Código</th>'+
+                                    '<th>Talla</th>'+
+                                    //'<th>Cantidad</th>'+
+                                    '<th>Nueva Talla</th>'+
+                                '</tr>'+
+                            '</thead>'+
+                            '<input type="hidden" id="cantDatos" value="'+a.tallas.length+'" />'+
+                            '<input type="hidden" id="numCajaC" value="'+numCaja+'" />'+
+                            '<input type="hidden" id="numDocC" value="'+numDoc+'" />'+
+                            '<tbody>'
+
+            tallas = a.tallas
+            cantidades = a.cantidades
+            for(i=0; i<tallas.length; i++){
+                aux = tallas[i].split('*')
+                cod = aux[0]
+                tall = aux[1]
+                dato += 
+                    '<tr>'+
+                        '<td>'+cod+'</td>'+
+                        '<td>'+tall+'</td>'+
+                        //'<td>'+cantidades[i]+'</td>'+
+                        '<td><input id="nt_'+i+'" type="text" value="" style="width: 50px; border-radius: 3px;" /></td>'+
+                    '</tr>'
+            }
+
+            dato+=      '</tbody>'+
+                    '</table>'
+
+            $('#cuerpoCambiar').append(dato)
+            $('#modalCambiarTalla').modal({
+                keyboard: false,
+                backdrop: 'static'
+            })
+        },
+        error: function(e){
+
+        }
+    })
+}
+
+$('#btnCambiarTalla').click(function(){
+    var nuevasTallas = []
+    var numCaja = $('#numCajaC').val()
+    var numDoc = $('#numDocC').val()
+    var cant = $('#cantDatos').val()
+
+    for(i=0; i<cant; i++){
+        aux = $('#nt_'+i).val()
+        nuevasTallas.push(aux)
+    }
+    var data = {
+        nuevasTallas,
+        numCaja,
+        numDoc,
+        _token: $('input[name=_token]').val(),
+    }
+
+    $.ajax({
+        type: 'post',
+        url: 'documentos_venta/cambiar_talla',
+        data,
+        dataType: 'json',
+        success: function(a){
+            if(a.estado){
+                $('#modalCambiarTalla').modal('hide')
+                location.replace(URI)
+            }
+        },
+        error: function(e){
+            console.log(e)
+        }
     })
 })

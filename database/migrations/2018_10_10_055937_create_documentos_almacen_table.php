@@ -16,15 +16,18 @@ class CreateDocumentosAlmacenTable extends Migration
         Schema::create('documentos_almacen', function (Blueprint $table) {
             $table->increments('id');
             $table->string('numero');
-            $table->string('tipo');
-            $table->string('origen')->nullable();
-            $table->string('destino')->nullable();
+            $table->string('origen');
+            $table->string('destino');
             $table->integer('usuario');
             $table->json('productos');
             $table->json('cantidades');
+            $table->json('tallas');
+            $table->json('cantidad_talla');
+            $table->json('tallas')->nullable();
+            $table->json('cantidad_talla')->nullable();
             $table->string('comentario')->nullable();
             $table->integer('usuario_anulacion')->nullable();
-            $table->boolean('estado');
+            $table->integer('estado');
             $table->timestamps();
         });
     }

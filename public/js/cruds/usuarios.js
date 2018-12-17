@@ -76,6 +76,7 @@ function editarUsuario(id){
         },
         complete: function(res){
             var data = res.responseJSON
+            console.log(data)
             numeroDoc = data.num_documento
             usuario = data.username
             tipoUsuario = data.tipo

@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-productos">
                         <tr>
                             <th>RUC</th>
                             <th>Proveedor</th>
@@ -34,7 +34,7 @@
                     <tbody>
                         @foreach ($proveedores as $proveedor)
                             <tr>
-                                <td>{{ $proveedor->ruc }}</td>
+                                <td class="identificador">{{ $proveedor->ruc }}</td>
                                 <td>{{ $proveedor->nombre }}</td>
                                 <td>{{ $proveedor->correo }}</td>
                                 <td>{{ $proveedor->telefono1 }}</td>

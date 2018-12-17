@@ -16,11 +16,13 @@ class CreateDocumentosCompraTable extends Migration
         Schema::create('documentos_compra', function (Blueprint $table) {
             $table->increments('id');
             $table->string('numero');
+            $table->date('fecha');
             $table->integer('usuario');
             $table->string('proveedor');
             $table->json('productos');
             $table->json('cantidades');
-            $table->json('descuentos');
+            $table->json('tallas');
+            $table->json('cantidad_talla');
             $table->double('monto_total', 7, 2);
             $table->integer('usuario_anulacion')->nullable();
             $table->boolean('estado');

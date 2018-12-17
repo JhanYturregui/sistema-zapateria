@@ -17,7 +17,7 @@ class DocumentoCompra extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id', 'numero', 'usuario', 'proveedor', 'productos', 'cantidades', 'monto_total', 'estado', 'created_at'
+        'id', 'numero', 'fecha','usuario', 'proveedor', 'productos', 'cantidades', 'monto_total', 'estado', 'created_at'
     ];
 
     /**

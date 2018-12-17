@@ -12,7 +12,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearDocumentoAlmacen()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
@@ -22,27 +22,46 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-datos">
                         <tr>
                             <th>Numero</th>
                             <th>Tipo</th>
                             <th>Fecha</th>
-
-                            @if (Auth::user()->tipo == 1)
-                                <th ><i class="fas fa-wrench"></i></th>
+                            <th>Estado</th>
+                            @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2 || Auth::user()->tipo == 3)
+                                <th>Acción</th>
                             @endif
 
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($documentos as $documento)
+                            @if ($documento->estado == 1)
+                            <tr class="pendiente">
+                            @else
                             <tr>
-                                <td>{{ $documento->numero }}</td>
-                                <td>{{ $documento->tipo }}</td>
+                            @endif
+                                <td class="identificador">{{ $documento->numero }}</td>
+                                @if ($documento->destino == Auth::user()->sucursal)
+                                    <td>Ingreso</td>
+                                @else
+                                    <td>Salida</td>    
+                                @endif
                                 <td>{{ $documento->created_at }}</td>
-
-                                @if (Auth::user()->tipo == 1)
-                                   <th ><i class="fas fa-trash" title="Anular" onclick="anularDocumentoAlmacen('{{$documento->numero}}')"></i></th>
+                                @if ($documento->estado == 1)
+                                    <td style="color: orange;"><i class="far fa-clock" title="Pendiente..."></i></td>
+                                @elseif($documento->estado == 2)
+                                    <td style="color:#4caf50"><i class="fas fa-check" title="Aceptado"></i></td>
+                                @else
+                                    <td style="color: red"><i class="fas fa-ban" title="Anulado"></i></td>    
+                                @endif
+                                @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2 || Auth::user()->tipo == 3)
+                                    @if ($documento->destino == Auth::user()->sucursal && $documento->estado == 1)
+                                        <td><i class="fas fa-check-circle" onclick="aceptarDocumentoAlmacen('{{$documento->numero}}')" title="Aceptar" style="cursor:pointer; color:#0277bd"></i></td>
+                                    @else
+                                        <td></td>    
+                                    @endif
+                                    
                                 @endif
 
                             </tr>
@@ -92,15 +111,15 @@
                         <label for="fechaDoc">Fecha Documento</label>
                         <input type="text" id="fechaDoc" class="form-control" readonly>
                     </div>
-                    <div class="col-md-3 form-group">
+                    <!--<div class="col-md-3 form-group">
                         <label for="tipoDoc">Tipo Documento</label>
                         <select class="form-control" id="tipoDoc" onchange="tipoDocAlm()">
                             <option value="ingreso">Ingreso</option>
                             <option value="salida">Salida</option>
                         </select>
-                    </div>
+                    </div>-->
                     <div class="col-md-3 form-group" id="divSucursales">
-                        <label id="tituloSuc" for="sucursales">Origen</label>
+                        <label id="tituloSuc" for="sucursales">Destino</label>
                         <select class="form-control" id="sucursales">
                             @foreach ($sucursales as $sucursal)
                                 <option value="{{$sucursal->id}}">{{$sucursal->nombre}}</option>    
@@ -112,12 +131,11 @@
                         <label for="codigoProd">Código producto</label>
                         <input type="text" id="codigoProd" class="form-control" placeholder="Ingrese código" onkeyup="buscarProductos(this.value)">
                     </div>
-                    <div class="col-md-9 form-group">
+                    <div class="col-md-4 form-group">
                         <label for="comentario">Comentario</label>
                         <textarea id="comentario" cols="30" rows="3" class="form-control" placeholder="Comentario"></textarea>
                     </div>
 
-                    <div class="col-md-2 form-group"></div>
                     <div class="col-md-8 form-group" id="productos">
                         <table class="table table-bordered">
                             <thead>
@@ -133,22 +151,18 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-2 form-group"></div>
 
                     <div class="col-md-12 form-group" id="productosSeleccionados">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="cabecera-productos">
                                 <tr class="titulo">
-                                    <th colspan="8">PRODUCTOS SELECCIONADOS</th>
+                                    <th colspan="5">PRODUCTOS SELECCIONADOS</th>
                                 </tr>
                                 <tr>
                                     <th>Código</th>
-                                    <th>Marca</th>
-                                    <th>Modelo</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Línea</th>
+                                    <th>Descripción</th>
                                     <th>Cantidad</th>
+                                    <th>Tallas</th>
                                     <th>Eliminar</th>
                                 </tr>
                             </thead>
@@ -195,6 +209,31 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-danger" id="btnAnularDocumento">Anular</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TALLAS -->
+<div class="modal fade" id="modalTallas" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!--<input type="hidden" id="codigoProducto" >-->
+
+            <div class="modal-header cabecera-editar">
+                <h5 class="modal-title" id="tituloTallas"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="cuerpoTallas">
+                
+            </div>
+
+            <div class="modal-footer" id="footerTallas">
+                
             </div>
         </div>
     </div>

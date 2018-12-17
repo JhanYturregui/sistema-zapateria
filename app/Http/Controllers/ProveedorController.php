@@ -165,4 +165,24 @@ class ProveedorController extends Controller
         $proveedor->estado = false;
         $proveedor->save();
     }
+
+    public function buscar(Request $request){
+        $docProveedor = $request->get('docProveedor');
+        $response = array();
+
+        $existeProveedor = Proveedor::where([['ruc', $docProveedor], ['estado', true]])->exists();
+        if($existeProveedor){
+            $proveedor = Proveedor::where([['ruc', $docProveedor], ['estado', true]])->first();
+            $nombre = $proveedor->nombre;
+
+            $response["estado"] = true;
+            $response["mensaje"] = $nombre;
+
+        }else{
+            $response["estado"] = false;
+            $response["mensaje"] = "El proveedor no se encuentra registrado";
+        }
+
+        return json_encode($response);
+    }
 }

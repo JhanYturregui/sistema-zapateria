@@ -15,7 +15,7 @@
             <button class="btn btn-primary crear" onclick="crearDocumentoVenta()"><i class="fas fa-plus"></i>Registrar venta</button>    
         @endif
         
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
@@ -25,26 +25,42 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-datos">
                         <tr>
                             <th>Numero</th>
                             <th>Caja</th>
                             <th>Fecha</th>
                             <th>Monto</th>
+                            <th>Cambio</th>
+                            <th>Estado</th>
                             @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2)
-                                <th>Anular</th>
+                                <th>Acción</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($ventas as $venta)
                             <tr>
-                                <td>{{ $venta->numero }}</td>
+                                <td class="identificador">{{ $venta->numero }}</td>
                                 <td>{{ $venta->numero_caja }}</td>
                                 <td>{{ $venta->created_at }}</td>
                                 <td>{{ $venta->monto_total }}</td>
+                                @if ($venta->estado == true)
+                                    <td style="color:#0277bd; cursor: pointer;"><i class="fas fa-exchange-alt" title="Cambiar talla" onclick="cambiarTalla('{{$venta->numero}}', '{{ $venta->numero_caja }}')"></i></td>
+                                @else
+                                    <td></td>
+                                @endif
+                                @if ($venta->estado == false)
+                                    <td style="color: red"><i class="fas fa-ban" title="Anulado"></i></td>
+                                @else
+                                    <td style="color:#4caf50"><i class="fas fa-check"></i></td>    
+                                @endif
                                 @if (Auth::user()->tipo == 1 || Auth::user()->tipo == 2)
-                                    <td><i class="fas fa-trash" title="Anular" onclick="anularDocumentoVenta('{{$venta->numero}}')"></i></td>
+                                    @if ($venta->estado == true)
+                                        <td><i class="fas fa-trash" title="Anular" onclick="anularDocumentoVenta('{{$venta->numero}}')"></i></td>
+                                    @else
+                                        <td></td>
+                                    @endif
                                 @endif
                             </tr>
                         @endforeach
@@ -128,17 +144,14 @@
 
                     <div class="col-md-12 form-group" id="productosSeleccionados">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="cabecera-productos">
                                 <tr class="titulo">
-                                    <th colspan="11">PRODUCTOS SELECCIONADOS</th>
+                                    <th colspan="8">PRODUCTOS SELECCIONADOS</th>
                                 </tr>
                                 <tr>
                                     <th>Código</th>
-                                    <th>Marca</th>
-                                    <th>Modelo</th>
-                                    <th>Color</th>
+                                    <th>Descripción</th>
                                     <th>Talla</th>
-                                    <th>Línea</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Dsct</th>
@@ -151,6 +164,11 @@
                             </tbody>
                         </table>
                     </div>    
+
+                    <div class="col-md-12 form-group">
+                        <small id="mensaje" class="help-block col-sm-offset-0 col-sm-12 validar-campo-lg">
+                            </small>
+                    </div>
                     
                     <div class="col-md-12 caja" id="caja">
                         <div class="metodo-pago">
@@ -182,10 +200,7 @@
                         
                     </div>    
 
-                    <div class="col-md-12 form-group">
-                        <small id="mensaje" class="help-block col-sm-offset-0 col-sm-12 validar-campo-lg">
-                            </small>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -218,6 +233,56 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-danger" id="btnAnularDocumentoVenta">Anular</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TALLAS -->
+<div class="modal fade" id="modalTallas" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <input type="hidden" id="codigoProducto" >
+
+            <div class="modal-header cabecera-accesos">
+                <h5 class="modal-title" id="tituloTallas"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="cuerpoTallas">
+
+                
+            </div>
+
+            <div class="modal-footer" id="footerTallas">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CAMBIAR TALLA -->
+<div class="modal fade" id="modalCambiarTalla" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header cabecera-crear">
+                <h5 class="modal-title" id="">Cambiar Talla</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="cuerpoCambiar">
+                
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnCambiarTalla">Guardar</button>
             </div>
         </div>
     </div>

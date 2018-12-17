@@ -17,7 +17,7 @@ class Producto extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id', 'codigo', 'descripcion', 'marca', 'modelo', 'color', 'talla', 'linea','estado', 'created_at'
+        'id', 'codigo', 'modelo', 'descripcion', 'marca', 'color', 'taco', 'linea', 'linea_2', 'linea_3', 'estado', 'created_at'
     ];
 
     /**

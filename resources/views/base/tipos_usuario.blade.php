@@ -12,7 +12,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearTipoUsuario()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-productos">
                         <tr>
                             <th>Id</th>
                             <th>Nombre</th>
@@ -32,7 +32,7 @@
                     <tbody>
                         @foreach ($tiposUsuario as $tipoUsuario)
                             <tr>
-                                <td>{{ $tipoUsuario->id }}</td>
+                                <td class="identificador">{{ $tipoUsuario->id }}</td>
                                 <td>{{ $tipoUsuario->nombre }}</td>
                                 <td><i class="fas fa-key" title="Accesos" onclick="accesos({{$tipoUsuario->id}})"></i></td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarTipoUsuario({{$tipoUsuario->id}})"></i></td>

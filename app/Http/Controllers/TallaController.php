@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Talla;
+use App\Inventario;
 
 class TallaController extends Controller
 {
@@ -157,5 +158,30 @@ class TallaController extends Controller
         $talla = Talla::where([['id', $id], ['estado', true]])->first();
         $talla->estado = false;
         $talla->save();
+    }
+
+
+    public function listar(Request $request){
+        $tallas = Talla::where('estado', true)->get();
+        return json_encode($tallas);
+    }
+
+    public function listarTallasCodigo(Request $request){
+        $codigo = $request->get('codigo');
+        $inv = Inventario::where('codigo_producto', $codigo)->first();
+        $tallas = json_decode($inv->tallas);
+        $cantTallas = json_decode($inv->cantidad_talla);
+        $arrTallas = array();
+
+        for($i=0; $i<count($tallas); $i++){
+            $tall = $tallas[$i];
+            $cant = $cantTallas[$i];
+            if($cant > 0){
+                array_push($arrTallas, $tall);
+            }
+        }
+        sort($arrTallas);
+        
+        return json_encode($arrTallas);
     }
 }

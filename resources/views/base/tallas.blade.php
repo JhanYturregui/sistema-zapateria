@@ -12,7 +12,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearTalla()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-datos">
                         <tr>
                             <th>Id</th>
                             <th>Nombre</th>
@@ -32,7 +32,7 @@
                     <tbody>
                         @foreach ($tallas as $talla)
                             <tr>
-                                <td>{{ $talla->id }}</td>
+                                <td class="identificador">{{ $talla->id }}</td>
                                 <td>{{ $talla->nombre }}</td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarTalla({{$talla->id}})"></i></td>
                                 <td><i class="fas fa-trash" title="Eliminar" onclick="eliminarTalla({{$talla->id}})"></i></td>

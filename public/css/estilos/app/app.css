@@ -235,3 +235,29 @@
     float: left;
     margin-right: 5%;
 }
+.slc-talla{
+    padding: 10px 30px !important;
+    border-radius: 25px !important;
+}
+.cabecera-productos{
+    background: var(--color-principal);
+    color: #eceff1;
+}
+.fa-pen{
+    color: green !important;
+}
+#modalCrearDocumentoVenta .modal-body{
+    height: 70vh !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+}
+.cabecera-datos{
+    background: #007bff;
+    color: #fff;
+}
+.identificador{
+    font-weight: bold;
+}
+.pendiente{
+    background: #cfd8dc;
+}

@@ -2,6 +2,8 @@
 
 @section('css')
     <link href="{{ asset('css/estilos/app/crud.css') }}" rel="stylesheet" >
+    <link href="{{ asset('css/select2/select2.css') }}" rel="stylesheet" >
+    <link href="{{ asset('css/select2/select2.bootstrap.css') }}" rel="stylesheet" >
 @endsection
 
 @section('contenido-principal')
@@ -12,7 +14,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearProducto()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <input type="search" class="form-control buscar" placeholder="Buscar" onkeyup="buscarPorCodigo(this.value)">
     </div>
 
     <div class="datos">
@@ -22,17 +24,17 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-productos">
                         <tr>
                             <th>Código</th>
                             <th>Descripción</th>
                             <th colspan="2"><i class="fas fa-wrench"></i></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="datosProductos">
                         @foreach ($productos as $producto)
                             <tr>
-                                <td>{{ $producto->codigo }}</td>
+                                <td class="identificador">{{ $producto->codigo }}</td>
                                 <td>{{ $producto->descripcion }}</td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarProducto({{$producto->id}})"></i></td>
                                 <td><i class="fas fa-trash" title="Eliminar" onclick="eliminarProducto({{$producto->id}})"></i></td>
@@ -52,7 +54,7 @@
 
 
 <!-- MODAL CREAR PRODUCTO -->
-<div class="modal fade" id="modalCrearProducto" tabindex="-1" role="dialog" aria-labelledby="crearProducto" aria-hidden="true">
+<div class="modal fade" id="modalCrearProducto" role="dialog" aria-labelledby="crearProducto" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
@@ -69,70 +71,10 @@
                         <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="codigo">Código</label>
-                                </div>
-                                <input type="text" id="codigo" class="form-control" placeholder="Código Producto">
-                                <small id="campoCodigo" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="marca">Marca</label>
-                                </div>
-                                <select class="custom-select" id="marca">
-                                    @foreach ($marcas as $marca)
-                                        <option value="{{$marca->id}}">{{$marca->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
                                     <label class="input-group-text" for="modelo">Modelo</label>
                                 </div>
-                                <select class="custom-select" id="modelo">
-                                    @foreach ($modelos as $modelo)
-                                        <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="color">Color</label>
-                                </div>
-                                <select class="custom-select" id="color">
-                                    @foreach ($colores as $color)
-                                        <option value="{{$color->id}}">{{$color->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="talla">Talla</label>
-                                </div>
-                                <select class="custom-select" id="talla">
-                                    @foreach ($tallas as $talla)
-                                        <option value="{{$talla->id}}">{{$talla->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="linea">Línea</label>
-                                </div>
-                                <select class="custom-select" id="linea">
-                                    @foreach ($lineas as $linea)
-                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" id="modelo" class="form-control" placeholder="Modelo Producto">
+                                <small id="campoCodigo" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
                             </div>
                         </div>
                         <div class="form-group col-md-4">
@@ -146,12 +88,84 @@
                         <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <label class="input-group-text" for="precioVenta">P. Venta</label>
+                                    <label class="input-group-text" for="precioVenta">P. Venta</label>
                                 </div>
                                 <input type="text" class="form-control" id="precioVenta" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVenta">
                             </div>
                         </div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="marca">Marca</label>
+                                </div>
+                                <select class="custom-select" id="marca">
+                                    @foreach ($marcas as $marca)
+                                        <option value="{{$marca->id}}">{{$marca->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="color">Color</label>
+                                </div>
+                                <select class="custom-select" id="color">
+                                    @foreach ($colores as $color)
+                                        <option value="{{$color->id}}">{{$color->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="linea">Línea</label>
+                                </div>
+                                <select class="custom-select" id="linea">
+                                    @foreach ($lineas as $linea)
+                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="linea2">Línea 2</label>
+                                </div>
+                                <select class="custom-select" id="linea2">
+                                    @foreach ($lineas2 as $linea)
+                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="linea3">Línea 3</label>
+                                </div>
+                                <select class="custom-select" id="linea3">
+                                    @foreach ($lineas3 as $linea)
+                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="taco">Taco</label>
+                                </div>
+                                <select class="custom-select" id="taco">
+                                    @foreach ($tacos as $taco)
+                                        <option value="{{$taco->id}}">{{$taco->numero}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="descripcion">Descripción</label>
@@ -194,13 +208,30 @@
                         <div class="form-group col-md-4">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="codigoA">Código</label>
+                                    <label class="input-group-text" for="modeloA">Modelo</label>
                                 </div>
-                                <input type="text" id="codigoA" class="form-control" placeholder="Código Producto">
+                                <input type="text" id="modeloA" class="form-control" placeholder="Modelo Producto">
                                 <small id="campoCodigoA" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
                             </div>
                         </div>
                         <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="precioCompraA">P. Compra</label>
+                                </div>
+                                <input type="text" class="form-control" id="precioCompraA" placeholder="Precio compra" aria-label="Precio compra" aria-describedby="precioCompraA">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="precioVentaA">P. Venta</label>
+                                </div>
+                                <input type="text" class="form-control" id="precioVentaA" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVentaA">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="marcaA">Marca</label>
@@ -212,19 +243,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="modeloA">Modelo</label>
-                                </div>
-                                <select class="custom-select" id="modeloA">
-                                    @foreach ($modelos as $modelo)
-                                        <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="colorA">Color</label>
@@ -236,19 +255,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="tallaA">Talla</label>
-                                </div>
-                                <select class="custom-select" id="tallaA">
-                                    @foreach ($tallas as $talla)
-                                        <option value="{{$talla->id}}">{{$talla->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="lineaA">Línea</label>
@@ -260,23 +267,43 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="precioCompraA">P. Compra</label>
+                                    <label class="input-group-text" for="linea2A">Línea 2</label>
                                 </div>
-                                <input type="text" class="form-control" id="precioCompraA" placeholder="Precio compra" aria-label="Precio compra" aria-describedby="precioCompra">
+                                <select class="custom-select" id="linea2A">
+                                    @foreach ($lineas2 as $linea)
+                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <label class="input-group-text" for="precioVentaA">P. Venta</label>
+                                    <label class="input-group-text" for="linea3A">Línea 3</label>
                                 </div>
-                                <input type="text" class="form-control" id="precioVentaA" placeholder="Precio venta" aria-label="Precio venta" aria-describedby="precioVenta">
+                                <select class="custom-select" id="linea3A">
+                                    @foreach ($lineas3 as $linea)
+                                        <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="tacoA">Taco</label>
+                                </div>
+                                <select class="custom-select" id="tacoA">
+                                    @foreach ($tacos as $taco)
+                                        <option value="{{$taco->id}}">{{$taco->numero}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="descripcionA">Descripción</label>
@@ -285,7 +312,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-12">
-                            <small id="errorA" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
+                            <small id="error" class="help-block col-sm-offset-0 col-sm-12 validar-campo"></small>
                         </div>
                     </div>
                 </form>    
@@ -329,4 +356,22 @@
 
 @section('js')
     <script src="{{ asset('js/cruds/productos.js') }}"></script>
+    <script src="{{ asset('js/select2/select2.js') }}"></script>
+    <script>
+        $('#modalCrearProducto select').css('width', '100%')
+        $('#marca').select2({})
+        $('#color').select2({})
+        $('#talla').select2({})
+        $('#linea').select2({})
+        $('#linea2').select2({})
+        $('#linea3').select2({})
+
+        $('#modalEditarProducto select').css('width', '100%')
+        $('#marcaA').select2({})
+        $('#colorA').select2({})
+        $('#tallaA').select2({})
+        $('#lineaA').select2({})
+        $('#linea2A').select2({})
+        $('#linea3A').select2({})
+    </script>
 @endsection

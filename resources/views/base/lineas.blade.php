@@ -12,7 +12,7 @@
 
     <div class="botones">
         <button class="btn btn-primary crear" onclick="crearLinea()"><i class="fas fa-plus"></i>Crear</button>
-        <input type="search" class="form-control buscar" placeholder="Buscar">
+        <!--<input type="search" class="form-control buscar" placeholder="Buscar">-->
     </div>
 
     <div class="datos">
@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="cabecera-datos">
                         <tr>
                             <th>Id</th>
                             <th>Nombre</th>
@@ -32,7 +32,7 @@
                     <tbody>
                         @foreach ($lineas as $linea)
                             <tr>
-                                <td>{{ $linea->id }}</td>
+                                <td id="identificador">{{ $linea->id }}</td>
                                 <td>{{ $linea->nombre }}</td>
                                 <td><i class="fas fa-pen" title="Editar" onclick="editarLinea({{$linea->id}})"></i></td>
                                 <td><i class="fas fa-trash" title="Eliminar" onclick="eliminarLinea({{$linea->id}})"></i></td>

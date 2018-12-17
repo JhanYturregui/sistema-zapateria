@@ -10,7 +10,10 @@ use App\Marca;
 use App\Modelo;
 use App\Color;
 use App\Talla;
+use App\Taco;
 use App\Linea;
+use App\Linea2;
+use App\Linea3;
 use App\Inventario;
 
 class ProductoController extends Controller
@@ -24,6 +27,7 @@ class ProductoController extends Controller
     {
         $this->middleware('paginas');
         $this->middleware('auth');
+        date_default_timezone_set('America/Lima');
     }
 
     /**
@@ -41,18 +45,20 @@ class ProductoController extends Controller
                             ->paginate(10);
         
         $marcas  = Marca::where('estado', true)->orderBy('id', 'asc')->get();
-        $modelos = Modelo::where('estado', true)->orderBy('id', 'asc')->get();
         $colores = Color::where('estado', true)->orderBy('id', 'asc')->get();
-        $tallas  = Talla::where('estado', true)->orderBy('id', 'asc')->get();
+        $tacos  = Taco::where('estado', true)->orderBy('id', 'asc')->get();
         $lineas  = Linea::where('estado', true)->orderBy('id', 'asc')->get();
+        $lineas2  = Linea2::where('estado', true)->orderBy('id', 'asc')->get();
+        $lineas3  = Linea3::where('estado', true)->orderBy('id', 'asc')->get();
                             
         return view('base.productos', ['productos'=> $productos, 
                                         'datos'   => $datos,
                                         'marcas'  => $marcas,
-                                        'modelos' => $modelos,
                                         'colores' => $colores,
-                                        'tallas'  => $tallas,
-                                        'lineas'  => $lineas]);                            
+                                        'tacos'  => $tacos,
+                                        'lineas'  => $lineas,                            
+                                        'lineas2'  => $lineas2,                           
+                                        'lineas3'  => $lineas3]);                            
     }
 
     /**
@@ -73,89 +79,101 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $codigo = $request->get('codigo');
+        $modelo = mb_strtoupper($request->get('modelo'));
         $descripcion = $request->get('descripcion');
         $marca = $request->get('marca');
-        $modelo = $request->get('modelo');
         $color = $request->get('color');
-        $talla = $request->get('talla');
+        $taco = $request->get('taco');
         $linea = $request->get('linea');
+        $linea2 = $request->get('linea2');
+        $linea3 = $request->get('linea3');
         $precioCompra = $request->get('precioCompra');
         $precioVenta = $request->get('precioVenta');
-     
+
         $response = array();
-        //$codigo = $this->generarCodigo(8);
-        $existeCodigo = Producto::where('codigo', $codigo)->first();
-        
-        while ($existeCodigo) {
-            $codigo = $this->generarCodigo(8);
-        }
+        $añoActual = date('y');
+        $mesActual = date('n');
 
-        $existeCodigo = Producto::where('codigo', $codigo)->exists();
-        if($existeCodigo){
-            $response["estado"] = false;
-            $response["mensaje"] = "Este código ya se encuentra registrado";
-
+        //Temporada
+        if($mesActual==1||$mesActual==2||$mesActual==3||$mesActual==4||$mesActual==5||$mesActual==11){
+            $temporada = 1;
         }else{
-            $existeProducto = Producto::where([['marca', $marca],
-                                            ['modelo', $modelo],
-                                            ['color', $color],
-                                            ['talla', $talla],
-                                            ['linea', $linea]])->exists();
+            $temporada = 2;
+        }
+        
+        $existeProducto = Producto::where([['modelo', $modelo],
+                                           ['marca', $marca],
+                                           ['color', $color],
+                                           ['linea', $linea],
+                                           ['linea_2', $linea2],
+                                           ['linea_3', $linea3]])->exists();
+        if($existeProducto){
+            $prod = Producto::where([['modelo', $modelo],
+                                     ['marca', $marca],
+                                     ['color', $color],
+                                     ['linea', $linea],
+                                     ['linea_2', $linea2],
+                                     ['linea_3', $linea3]])->orderBy('id', 'desc')->first();
+            $codProd = $prod->codigo;
+            $codigoPr = "";
+            $aux = str_split($codProd, 1); 
 
-            if($existeProducto){
-                $productoActivo = Producto::where([['marca', $marca],
-                                                ['modelo', $modelo],
-                                                ['color', $color],
-                                                ['talla', $talla],
-                                                ['linea', $linea],
-                                                ['estado', true]])->exists();
-                if($productoActivo){
+            for($i=3; $i<count($aux); $i++){
+                $codigoPr.= $aux[$i];
+            }  
+            $correlativoAño = $aux[0].$aux[1];
+            $correlativoTemp = $aux[2];
+
+            if($añoActual == $correlativoAño){
+                if($correlativoTemp == $temporada){
                     $response["estado"] = false;
-                    $response["mensaje"] = "El producto ya se encuentra registrado";
+                    $response["mensaje"] = "Este producto ya se encuentra registrado. Código: ".$codProd;
+                    return json_encode($response);
 
                 }else{
-                    $producto = Producto::where([['marca', $marca],
-                                                ['modelo', $modelo],
-                                                ['color', $color],
-                                                ['talla', $talla],
-                                                ['linea', $linea]])->first();
-                    $producto->estado = true;
-                    $response["estado"] = true;
-                    $response["mensaje"] = "";                                             
-                }                                                                 
+                    $nuevoCodigo = $añoActual.$temporada.$codigoPr;       
+                }
 
             }else{
-                /** Tabla PRODUCTOS */
-                $producto = new Producto();
-                $producto->codigo = $codigo;
-                $producto->descripcion = $descripcion;
-                $producto->marca = $marca;
-                $producto->modelo = $modelo;
-                $producto->color = $color;
-                $producto->talla = $talla;
-                $producto->linea = $linea;
-                $producto->precio_compra = $precioCompra;
-                $producto->precio_venta = $precioVenta;
-                $producto->estado = true;
-                $producto->save();
+                $nuevoCodigo = $añoActual.$temporada.$codigoPr;
+            } 
 
-                $response["estado"] = true;
-                $response["mensaje"] = "";
-
-                // Tabla INVENTARIO 
-                $inventario = new Inventario();
-                $inventario->codigo_producto = $codigo;
-                //$inventario->sucursal = Auth::user()->sucursal;
-                $inventario->sucursal = 1;
-                $inventario->cantidad= 0;
-                $inventario->estado = true;
-                $inventario->save();
-                
-                $response["estado"] = true;
-                $response["mensaje"] = "";
-            }
+        }else{
+            $aux = Producto::orderBy('id', 'desc')->first();
+            $ultimoId = $aux->id;
+            $nuevoId = $ultimoId+1;
+            $nuevoCodigo = $añoActual.$temporada.$nuevoId;
         }
+
+        // Tabla PRODUCTOS
+        $producto = new Producto();
+        $producto->codigo = $nuevoCodigo;
+        $producto->modelo = $modelo;
+        $producto->descripcion = $descripcion;
+        $producto->marca = $marca;
+        $producto->color = $color;
+        $producto->taco = $taco;
+        $producto->linea = $linea;
+        $producto->linea_2 = $linea2;
+        $producto->linea_3 = $linea3;
+        $producto->precio_compra= $precioCompra;
+        $producto->precio_venta = $precioVenta;
+        $producto->estado = true;
+        $producto->save();
+
+        // Tabla INVENTARIO
+        $inventario =  new Inventario();
+        $inventario->codigo_producto = $nuevoCodigo;
+        $inventario->sucursal = 1;
+        $inventario->cantidad = 0;
+        $inventario->tallas = json_encode(array());
+        $inventario->cantidad_talla = json_encode(array());
+        $inventario->estado = true;
+        $inventario->save();   
+
+        $response["estado"] = true;
+        $response["mensaje"] = "";
+
         return json_encode($response);
     }
 
@@ -284,11 +302,12 @@ class ProductoController extends Controller
      */
     public function buscarProductos(Request $request){
         $codigo = mb_strtoupper($request->get('codigo'));
-        //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
         $productos = DB::table('productos')
                      ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
                      ->select('productos.*', 'inventario.cantidad as cantidad')
                      ->where('productos.codigo', 'LIKE', $codigo.'%')
+                     ->where('inventario.sucursal', Auth::user()->sucursal)
+                     ->where('inventario.cantidad', '>', '0')
                      ->where('productos.estado', true)
                      ->get();
 
@@ -303,11 +322,11 @@ class ProductoController extends Controller
     public function buscarProductosVentas(Request $request){
         $codigo = mb_strtoupper($request->get('codigo'));
         
-        //$productos = Producto::where([['codigo', 'LIKE', '%'.$codigo.'%'], ['estado', true]])->get();
         $productos = DB::table('productos')
                      ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
                      ->select('productos.*', 'inventario.cantidad as cantidad')
                      ->where('productos.codigo', 'LIKE', $codigo.'%')
+                     ->where('inventario.sucursal', Auth::user()->sucursal)
                      ->where('inventario.cantidad', '>', 0)
                      ->where('productos.estado', true)
                      ->get();
@@ -328,6 +347,7 @@ class ProductoController extends Controller
                      ->join('inventario', 'inventario.codigo_producto', 'productos.codigo')
                      ->select('productos.*', 'inventario.cantidad as cantidad')
                      ->where('productos.codigo', 'LIKE', $codigo.'%')
+                     ->where('inventario.sucursal', 1)
                      ->where('productos.estado', true)
                      ->get();
 
@@ -342,19 +362,28 @@ class ProductoController extends Controller
     public function buscarProducto(Request $request){
         $codigo = mb_strtoupper($request->get('codigo'));
         $producto = DB::table('productos')
+                    ->join('inventario', 'inventario.codigo_producto', '=', 'productos.codigo')
                     ->join('marcas', 'marcas.id', '=', 'productos.marca')
-                    ->join('modelos', 'modelos.id', '=', 'productos.modelo')
                     ->join('colores', 'colores.id', '=', 'productos.color')
-                    ->join('tallas', 'tallas.id', '=', 'productos.talla')
+                    ->join('tacos', 'tacos.id', '=', 'productos.taco')
                     ->join('lineas', 'lineas.id', '=', 'productos.linea')
-                    ->select('productos.codigo', 'productos.precio_compra', 'productos.precio_venta',
-                             'marcas.nombre as marca', 'modelos.nombre as modelo',
-                             'colores.nombre as color', 'tallas.nombre as talla',
-                             'lineas.nombre as linea')
+                    ->join('linea2', 'linea2.id', '=', 'productos.linea_2')
+                    ->join('linea3', 'linea3.id', '=', 'productos.linea_3')
+                    ->select('productos.codigo', 'productos.descripcion', 
+                             'productos.precio_compra', 'productos.precio_venta',
+                             'inventario.tallas as tallas', 'marcas.nombre as marca', 
+                             'colores.nombre as color', 'tacos.numero as taco',
+                             'lineas.nombre as linea', 'linea2.nombre as linea2', 
+                             'linea3.nombre as linea3')
                     ->where('productos.codigo', $codigo)         
                     ->first();
 
         return json_encode($producto);
+    }
+
+    public function listarxCod(Request $request){
+        $codigo = $request->get('codigo');
+        print_r($codigo);exit;
     }
 
 }

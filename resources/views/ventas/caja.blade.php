@@ -27,7 +27,7 @@
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered">
-                        <thead>
+                        <thead class="cabecera-datos">
                             <tr>
                                 <th>Numero</th>
                                 <th>Tipo</th>
@@ -42,7 +42,7 @@
                         <tbody>
                             @foreach ($movimientos as $movimiento)
                                 <tr>
-                                    <td>{{ $movimiento->numero }}</td>
+                                    <td class="identificador">{{ $movimiento->numero }}</td>
                                     <td>{{ $movimiento->tipo }}</td>
                                     <td>{{ $movimiento->created_at }}</td>
                                     <td>{{ $movimiento->monto }}</td>
